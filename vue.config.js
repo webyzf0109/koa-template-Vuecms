@@ -26,12 +26,12 @@ module.exports = {
       error: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: process.env.VUE_APP_BASE_API,
+      '/v1': {
+        target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false,
+        // ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/v1': '/v1'
         }
       }
     }

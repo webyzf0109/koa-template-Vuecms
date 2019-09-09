@@ -1,22 +1,18 @@
 import axios from 'axios'
-import Qs from 'qs'
+// import Qs from 'qs'
 import store from '@/store'
 import router from '@/router'
 import Vue from 'vue'
 import { Loading, Message } from 'element-ui' // 引用element-ui的加载和消息提示组件
 
-const $axios = axios.create({
-  // 设置超时时间
-  timeout: 30000,
-  // 基础url，会在请求url中自动添加前置链接
-  baseURL: process.env.VUE_APP_BASE_API
-})
+axios.defaults.timeout = 30000
+// axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 Vue.prototype.$http = axios // 并发请求
 // 在全局请求和响应拦截器中添加请求状态
 let loading = null
 
 // 请求拦截器
-$axios.interceptors.request.use(
+axios.interceptors.request.use(
   config => {
     loading = Loading.service({ text: '拼命加载中' })
     const token = store.getters.token
@@ -30,7 +26,7 @@ $axios.interceptors.request.use(
   }
 )
 // 响应拦截器
-$axios.interceptors.response.use(
+axios.interceptors.response.use(
   response => {
     if (loading) {
       loading.close()
@@ -80,17 +76,10 @@ $axios.interceptors.response.use(
 // get，post请求方法
 export default {
   post(url, data) {
-    return $axios({
-      method: 'post',
-      url,
-      data: Qs.stringify(data),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
-    })
+    return axios.post(url, data)
   },
   get(url, params) {
-    return $axios({
+    return axios({
       method: 'get',
       url,
       params

@@ -23,22 +23,22 @@
       <div class="loginCon">
         <div class="titleDiv">
           <h3>Sign up now</h3>
-          <p>Enter your username and password to log on:</p>
+          <p>Enter your email and password to log on:</p>
           <i class="el-icon-key"></i>
         </div>
         <el-form ref="loginForm" :rules="rules" :model="ruleForm">
-          <el-form-item prop="user">
+          <el-form-item prop="account">
             <el-input
               placeholder="请输入账号"
               prefix-icon="el-icon-user"
-              v-model="ruleForm.user"
+              v-model="ruleForm.account"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="password">
+          <el-form-item prop="secret">
             <el-input
               placeholder="请输入密码"
               prefix-icon="el-icon-lock"
-              v-model="ruleForm.password"
+              v-model="ruleForm.secret"
               show-password
             ></el-input>
           </el-form-item>
@@ -63,15 +63,16 @@ export default {
       text: '向右滑动',
       showSlide: false,
       ruleForm: {
-        user: 'admin',
-        password: '123456'
+        account: '1213128156@qq.com',
+        secret: '123456$',
+        type: 101 //email 登录
       },
       rules: {
-        user: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 15, message: '长度在3到5个字符', trigger: 'blur' }
+        account: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { min: 10, message: '10个字符', trigger: 'blur' }
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        secret: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       }
     }
   },
@@ -102,10 +103,10 @@ export default {
       this.$store
         .dispatch('user/_login', this.ruleForm)
         .then(res => {
-          if (!res.data.success) {
+          if (!res.data) {
             this.refresh()
           } else {
-            this.$router.push(this.$route.query.redirect)
+            this.$router.push(res.data.resourceList[0].path)
             if (this.notifyObj) {
               this.notifyObj.close()
             }
@@ -120,8 +121,7 @@ export default {
     shopTip() {
       this.notifyObj = this.$notify({
         title: '提示',
-        message:
-          '目前有两个登陆角色，管理员和普通用户，账号分别为：admin、user,密码都为：123456',
+        message: '欢迎来到召唤师峡谷',
         duration: 0,
         iconClass: 'el-icon-s-opportunity'
       })

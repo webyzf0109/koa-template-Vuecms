@@ -288,13 +288,8 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         try {
-          const { roles } = await store.dispatch('user/_getInfo')
-          const addRoutes = await store.dispatch(
-            'permission/getAsyncRoutes',
-            roles
-          )
-          router.addRoutes(addRoutes)
-
+          const roles = sessionStorage.getItem('roles')
+          router.addRoutes(roles)
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })

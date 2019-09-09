@@ -1,9 +1,9 @@
 <template>
   <div class="sideItem" v-if="!item.hidden">
+    <p>{{ !childItem.list }}</p>
     <template
       v-if="
-        hasOnlyChild(item.children, item) &&
-          (!childItem.children || childItem.noChild)
+        hasOnlyChild(item.list, item) && (!childItem.list || childItem.noChild)
       "
     >
       <page-link v-if="childItem.meta" :to="resolvePath(childItem.path)">
@@ -19,7 +19,7 @@
         <span>{{ item.meta.title }}</span>
       </template>
       <sidebar-item
-        v-for="child in item.children"
+        v-for="child in item.list"
         :key="child.path"
         :item="child"
         :basePath="resolvePath(child.path)"
@@ -49,21 +49,25 @@ export default {
       childItem: null
     }
   },
+  created() {
+    console.log(this.item, 'item')
+  },
   methods: {
-    hasOnlyChild(children = [], item) {
+    hasOnlyChild(list = [], item) {
       // debugger
-      let newChildren = children.filter(obj => {
+      let newlist = list.filter(obj => {
         if (obj.hidden) {
           return false
         } else {
           return true
         }
       })
-      if (newChildren.length === 1 && !item.meta) {
-        this.childItem = newChildren[0]
+      if (newlist.length === 1 && !item.meta) {
+        this.childItem = newlist[0]
         return true
       }
-      if (newChildren.length === 0) {
+
+      if (newlist.length === 0) {
         this.childItem = { ...item, path: '', noChild: true }
         return true
       }

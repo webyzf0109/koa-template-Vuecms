@@ -1,11 +1,13 @@
-import { login, getInfo } from '@/api/login'
+import { login } from '@/api/login'
 import { Message } from 'element-ui'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: localStorage.getItem('token') ? localStorage.getItem('token') : '', // 认证凭证'
   userName: '',
-  roles: [],
+  roles: sessionStorage.getItem('roles')
+    ? JSON.parse(sessionStorage.getItem('roles'))
+    : [],
   introduce: ''
 }
 const mutations = {
@@ -36,21 +38,27 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(formdatas)
         .then(res => {
-          if (res.code === 0) {
-            if (res.data.success) {
-              Message.success(res.data.msg)
-              commit('SET_TOKEN', res.data.token)
-            } else {
-              Message.error(res.data.msg)
-            }
-            resolve(res)
+          if (res.data) {
+            Message.success(res.data.message)
+            commit('SET_TOKEN', res.data.token)
+            commit('SET_ROLES', res.data.resourceList)
+            commit('SET_NAME', res.data.username)
+            commit(
+              'SET_INTRODUCE',
+              res.data.scope == 8 ? '管理员' : '超级管理员'
+            )
+            sessionStorage.roles = JSON.stringify(res.data.resourceList)
+          } else {
+            Message.error(res.data.message)
           }
+          resolve(res)
         })
         .catch(error => {
           reject(error)
         })
     })
   },
+
   loginOut({ commit }) {
     commit('DEL_TOKEN')
     resetRouter()
@@ -59,25 +67,6 @@ const actions = {
       query: {
         redirect: router.currentRoute.fullPath
       }
-    })
-  },
-  _getInfo({ commit }) {
-    return new Promise((resolve, reject) => {
-      getInfo()
-        .then(res => {
-          if (res.code === 0) {
-            const { name, roles, introduce } = res.data
-            commit('SET_ROLES', roles)
-            commit('SET_NAME', name)
-            commit('SET_INTRODUCE', introduce)
-          } else {
-            Message.error(res.msg)
-          }
-          resolve(res.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
     })
   }
 }
