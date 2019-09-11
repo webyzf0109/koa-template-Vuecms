@@ -6,7 +6,6 @@ Vue.use(Router)
 
 import Layout from '@/layout'
 import NavTest from './modules/nav-test'
-import { Message } from 'element-ui'
 import getTitle from '@/utils/getTitle'
 
 /**
@@ -283,20 +282,7 @@ router.beforeEach(async (to, from, next) => {
     next()
   } else {
     if (store.getters.token) {
-      const hasRoles = store.getters.roles.length > 0
-      if (hasRoles) {
-        next()
-      } else {
-        try {
-          const roles = sessionStorage.getItem('roles')
-          router.addRoutes(roles)
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
-        } catch (error) {
-          Message.error(error)
-        }
-      }
+      next()
     } else {
       next({
         path: '/login',
