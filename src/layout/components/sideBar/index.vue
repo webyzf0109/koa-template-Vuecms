@@ -3,6 +3,9 @@
     <el-scrollbar>
       <el-menu
         :default-active="activeIndex"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
         class="el-menu-vertical-demo"
         :unique-opened="true"
       >
@@ -31,11 +34,7 @@
 
 <script>
 export default {
-  computed: {
-    activeMenu() {
-      return this.$route.path
-    }
-  },
+  computed: {},
   data() {
     return {
       activeIndex: '0',
@@ -45,11 +44,15 @@ export default {
   created() {
     this.roles = JSON.parse(sessionStorage.getItem('roles'))
     this.roles.forEach(item => {
-      item.list.forEach(childItem => {
-        if (childItem.path == this.$route.path) {
-          this.activeIndex = childItem.id.toString()
-        }
-      })
+      if (item.list) {
+        item.list.forEach(childItem => {
+          if (childItem.path == this.$route.path) {
+            this.activeIndex = childItem.id.toString()
+          }
+        })
+      } else {
+        this.activeIndex = item.id.toString()
+      }
     })
   },
   watch: {
