@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" :class="{ closeBar: opened }">
+  <div class="wrapper" :class="2">
     <m-header></m-header>
     <transition
       enter-active-class="animated bounceInRight"
@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['opened', 'msgIsShow', 'showDriver'])
+    ...mapGetters(['msgIsShow', 'showDriver'])
   },
   components: {
     SideBar,

@@ -5,9 +5,6 @@ import router, { resetRouter } from '@/router'
 const state = {
   token: localStorage.getItem('token') ? localStorage.getItem('token') : '', // 认证凭证'
   userName: '',
-  roles: sessionStorage.getItem('roles')
-    ? JSON.parse(sessionStorage.getItem('roles'))
-    : [],
   introduce: ''
 }
 const mutations = {
@@ -18,12 +15,9 @@ const mutations = {
   DEL_TOKEN(state) {
     state.token = ''
     state.userName = ''
-    state.roles = ''
     state.introduce = ''
     localStorage.removeItem('token')
-  },
-  SET_ROLES(state, payload) {
-    state.roles = payload
+    sessionStorage.removeItem('roles')
   },
   SET_NAME(state, payload) {
     state.userName = payload

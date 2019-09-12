@@ -29,7 +29,7 @@ export default {
             return true
           }
         })
-        if (allList[0].path !== '/' && allList[0].path !== '/dashbord') {
+        if (allList[0].path !== '/' && allList[0].path !== '/home') {
           allList.unshift({ path: '/', meta: { title: '首页' } })
         }
         this.breadList = allList
