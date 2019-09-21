@@ -3,27 +3,27 @@ import { Message } from 'element-ui'
 import router, { resetRouter } from '@/router'
 
 const state = {
-  token: localStorage.getItem('token') ? localStorage.getItem('token') : '', // 认证凭证'
+  token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : '', // 认证凭证'
   userName: '',
   introduce: ''
 }
 const mutations = {
   SET_TOKEN(state, val) {
     state.token = val
-    localStorage.setItem('token', val)
+    sessionStorage.setItem('token', val)
   },
-  DEL_TOKEN(state) {
-    state.token = ''
-    state.userName = ''
-    state.introduce = ''
-    localStorage.removeItem('token')
-    sessionStorage.removeItem('roles')
+  // SET_ROLES
+  DEL_TOKEN() {
+    sessionStorage.clear()
   },
   SET_NAME(state, payload) {
-    state.userName = payload
+    sessionStorage.setItem('userName', payload)
   },
   SET_INTRODUCE(state, payload) {
-    state.introduce = payload
+    sessionStorage.setItem('introduce', payload)
+  },
+  SET_ROLES(state, payload) {
+    sessionStorage.roles = JSON.stringify(payload)
   }
 }
 const actions = {
@@ -41,7 +41,6 @@ const actions = {
               'SET_INTRODUCE',
               res.data.scope == 8 ? '管理员' : '超级管理员'
             )
-            sessionStorage.roles = JSON.stringify(res.data.resourceList)
           } else {
             Message.error(res.data.message)
           }

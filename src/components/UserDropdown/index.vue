@@ -25,10 +25,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
-  computed: {
-    ...mapGetters(['userName'])
+  data() {
+    return {
+      userName: sessionStorage.getItem('userName')
+    }
   },
   methods: {
     _loginOut() {

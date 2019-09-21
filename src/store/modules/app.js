@@ -3,8 +3,8 @@ set sidebar open or close,and some app setting
  */
 const state = {
   msgIsShow: false,
-  showDriver: localStorage.getItem('driver')
-    ? localStorage.getItem('driver')
+  showDriver: sessionStorage.getItem('driver')
+    ? sessionStorage.getItem('driver')
     : 'yes'
 }
 const mutations = {
@@ -16,7 +16,7 @@ const mutations = {
   },
   SET_DRIVER(state, payload) {
     state.showDriver = payload
-    localStorage.setItem('driver', payload)
+    sessionStorage.setItem('driver', payload)
   }
 }
 export default {

@@ -37,6 +37,12 @@ export const currencyRoutes = [
         name: 'home',
         component: () => import('@/views/home'),
         meta: { title: '首页', icon: 'el-icon-s-data' }
+      },
+      {
+        path: 'movie',
+        name: 'movie',
+        component: () => import('@/views/movie'),
+        meta: { title: '期刊管理', icon: 'el-icon-s-data' }
       }
     ]
   }

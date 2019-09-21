@@ -3,30 +3,32 @@
     <el-scrollbar>
       <el-menu
         :default-active="activeIndex"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
+        background-color="rgb(58, 63, 81)"
+        text-color="rgb(181, 182, 189)"
+        active-text-color="rgb(79, 148, 212)"
         class="el-menu-vertical-demo"
         :unique-opened="true"
       >
-        <el-submenu
-          :index="item.id.toString()"
-          v-for="(item, index) in roles"
-          :key="index"
-        >
-          <template slot="title">
-            <span>{{ item.name }}</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item
-              @click="handleChildrenClick(childItem, childIndex)"
-              v-for="(childItem, childIndex) in item.list"
-              :key="childIndex"
-              :index="childItem.id.toString()"
-              >{{ childItem.name }}</el-menu-item
-            >
-          </el-menu-item-group>
-        </el-submenu>
+        <el-row v-for="(item, index) in roles" :key="index + item.id">
+          <el-menu-item :index="item.id.toString()" v-if="!item.list">
+            <i class="el-icon-menu"></i>
+            <span slot="title">{{ item.name }}</span>
+          </el-menu-item>
+          <el-submenu :index="item.id.toString()" v-if="item.list">
+            <template slot="title">
+              <span>{{ item.name }}</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item
+                @click="handleChildrenClick(childItem, childIndex)"
+                v-for="(childItem, childIndex) in item.list"
+                :key="childIndex"
+                :index="childItem.id.toString()"
+                >{{ childItem.name }}</el-menu-item
+              >
+            </el-menu-item-group>
+          </el-submenu>
+        </el-row>
       </el-menu>
     </el-scrollbar>
   </div>
@@ -74,3 +76,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.el-menu-item:focus,
+.el-menu-item:hover {
+  background-color: rgb(46, 50, 65) !important;
+}
+.el-submenu__title:focus,
+.el-submenu__title:hover {
+  background-color: rgb(46, 50, 65) !important;
+}
+</style>
