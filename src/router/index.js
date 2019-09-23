@@ -39,10 +39,10 @@ export const currencyRoutes = [
         meta: { title: '首页', icon: 'el-icon-s-data' }
       },
       {
-        path: 'movie',
-        name: 'movie',
-        component: () => import('@/views/movie'),
-        meta: { title: '期刊管理', icon: 'el-icon-s-data' }
+        path: 'category',
+        name: 'category',
+        component: () => import('@/views/category'),
+        meta: { title: '分类管理', icon: 'el-icon-s-data' }
       }
     ]
   }

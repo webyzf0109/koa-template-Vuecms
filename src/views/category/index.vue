@@ -1,24 +1,18 @@
-Skip to content Search or jump to… Pull requests Issues Marketplace Explore
-@webyzf0109 9 31988gcddblue/vue-admin-webapp Code Issues 9 Pull requests 0
-Projects 0 Wiki Security Insights
-vue-admin-webapp/src/views/table/complex-table.vue @gcddblue gcddblue
-table样式问题 2f5b26e 7 days ago 422 lines (420 sloc) 11.1 KB
-
 <template>
   <div class="className">
     <el-card class="anoCard">
       <div slot="header">
-        <span>复杂操作表格</span>
+        <span>分类列表</span>
       </div>
       <div class="searchDiv">
         <el-input
           type="text"
           placeholder="请输入订单号"
           class="width1"
-          v-model="sch_order"
+          v-model="name"
         ></el-input>
         <el-select
-          v-model="sch_status"
+          v-model="status"
           clearable
           class="width1"
           placeholde="请选择状态"
@@ -30,13 +24,6 @@ table样式问题 2f5b26e 7 days ago 422 lines (420 sloc) 11.1 KB
             :key="item.value"
           ></el-option>
         </el-select>
-        <el-date-picker
-          class="width1"
-          v-model="sch_date"
-          type="date"
-          placeholder="选择日期时间"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
         <el-button type="primary" icon="el-icon-search" @click="searchTab()"
           >搜索</el-button
         >
@@ -49,19 +36,8 @@ table样式问题 2f5b26e 7 days ago 422 lines (420 sloc) 11.1 KB
       </div>
       <el-table :data="tableData" border stripe>
         <el-table-column prop="id" label="序号" width="60"></el-table-column>
-        <el-table-column prop="order" label="订单号"></el-table-column>
-        <el-table-column prop="time" label="下单时间"></el-table-column>
-        <el-table-column
-          prop="address"
-          label="配送地址"
-          width="210"
-        ></el-table-column>
-        <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column
-          prop="name"
-          label="配送员"
-          width="70"
-        ></el-table-column>
+        <el-table-column prop="name" label="分类名称"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="status" label="状态" width="90">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status | tagClass">{{
@@ -80,7 +56,7 @@ table样式问题 2f5b26e 7 days ago 422 lines (420 sloc) 11.1 KB
               type="warning"
               @click="toConfirm(scope.row)"
               :disabled="scope.row.status === 1 ? false : true"
-              >审核</el-button
+              >{{ scope.row.status == 1 ? '下架' : '上架' }}</el-button
             >
             <el-button
               type="success"
@@ -110,58 +86,15 @@ table样式问题 2f5b26e 7 days ago 422 lines (420 sloc) 11.1 KB
       >
       </el-pagination>
     </el-card>
-    <el-dialog title="订单修改" :visible.sync="diaIsShow" class="diaForm">
+    <el-dialog title="分类管理" :visible.sync="diaIsShow" class="diaForm">
       <el-form
         ref="diaForm"
         :model="formData"
         :rules="rules"
         label-width="140px"
       >
-        <el-form-item label="订单号">
-          <el-input
-            type="text"
-            v-model="formData.order"
-            :disabled="true"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="订单时间" prop="time">
-          <el-date-picker
-            v-model="formData.time"
-            type="datetime"
-            placeholder="选择日期时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="配送地址" prop="address">
-          <el-input
-            type="text"
-            placeholder="请输入地址"
-            v-model="formData.address"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input
-            type="text"
-            placeholder="请输入电话"
-            v-model="formData.phone"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="配送员" prop="name">
-          <el-input
-            type="text"
-            placeholder="请输入姓名"
-            v-model="formData.name"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="formData.status" placeholde="请选择状态">
-            <el-option
-              v-for="item in options"
-              :label="item.label"
-              :value="item.value"
-              :key="item.value"
-            ></el-option>
-          </el-select>
+        <el-form-item label="分类名称" prop="name">
+          <el-input type="text" v-model="formData.name"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="changeTab('diaForm', editType)"
@@ -182,9 +115,8 @@ export default {
       tableData: [],
       allList: [],
       schArr: [],
-      sch_order: '',
-      sch_status: null,
-      sch_date: null,
+      name: '',
+      status: null,
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -193,28 +125,13 @@ export default {
       formData: {},
       editType: '',
       options: [
-        { label: '待审核', value: 1 },
-        { label: '配送中', value: 2 },
-        { label: '已完成', value: 0 },
-        { label: '已取消', value: 3 }
+        { label: '全部', value: '' },
+        { label: '上线中', value: 1 },
+        { label: '下线中', value: 2 }
       ],
       rowIndex: 0,
       rules: {
-        // order: [{ required: true, message: '请输入订单号', trigger: 'blur' }],
-        time: [
-          {
-            // type: 'datetime',
-            required: true,
-            message: '请输入时间',
-            trigger: 'change'
-          }
-        ],
-        address: [{ required: true, message: '请输入地址', trigger: 'blur' }],
-        phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        status: [
-          { required: true, message: '请选择订单状态', trigger: 'change' }
-        ]
+        name: [{ required: true, message: '请输入姓名', trigger: 'change' }]
       }
     }
   },
@@ -277,17 +194,12 @@ export default {
     searchTab() {
       let arrList = []
       for (let item of this.allList) {
-        if (
-          this.sch_order.trim() === '' &&
-          this.sch_status === null &&
-          this.sch_date === null
-        ) {
+        if (this.name.trim() === '' && this.status === null) {
           arrList = this.allList
           break
         } else if (
-          item.order.startsWith(this.sch_order) &&
-          (this.sch_status !== null ? item.status === this.sch_status : true) &&
-          (this.sch_date !== null ? item.time.startsWith(this.sch_date) : true)
+          item.order.startsWith(this.name) &&
+          (this.status !== null ? item.status === this.status : true)
         ) {
           let obj = Object.assign({}, item)
           arrList.push(obj)

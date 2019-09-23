@@ -42,7 +42,7 @@ axios.interceptors.response.use(
     if (loading) {
       loading.close()
     }
-    console.log(error)
+    console.log(error.response)
     if (error.response) {
       switch (error.response.status) {
         case 401:

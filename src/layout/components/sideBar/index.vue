@@ -10,7 +10,11 @@
         :unique-opened="true"
       >
         <el-row v-for="(item, index) in roles" :key="index + item.id">
-          <el-menu-item :index="item.id.toString()" v-if="!item.list">
+          <el-menu-item
+            @click="handleChildrenClick(item, index)"
+            :index="item.id.toString()"
+            v-if="!item.list"
+          >
             <i class="el-icon-menu"></i>
             <span slot="title">{{ item.name }}</span>
           </el-menu-item>

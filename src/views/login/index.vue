@@ -64,7 +64,7 @@ export default {
       showSlide: false,
       ruleForm: {
         account: '1213128156@qq.com',
-        secret: '123456$',
+        secret: '123456&',
         type: 101 //email 登录
       },
       rules: {
