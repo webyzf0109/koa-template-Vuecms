@@ -86,24 +86,7 @@
       >
       </el-pagination>
     </el-card>
-    <el-dialog title="分类管理" :visible.sync="diaIsShow" class="diaForm">
-      <el-form
-        ref="diaForm"
-        :model="formData"
-        :rules="rules"
-        label-width="140px"
-      >
-        <el-form-item label="活动名称" prop="name">
-          <el-input type="text" v-model="formData.name"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="changeTab('diaForm', editType)"
-            >确认</el-button
-          >
-          <el-button @click="diaIsShow = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    
   </div>
 </template>
 
@@ -121,18 +104,12 @@ export default {
       pageSize: 10,
       total: 0,
       pageSizes: [10, 20, 30, 40],
-      diaIsShow: false,
-      formData: {},
-      editType: '',
       options: [
         { label: '全部', value: '' },
         { label: '上架中', value: 1 },
         { label: '下架中', value: 2 }
       ],
       rowIndex: 0,
-      rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'change' }]
-      }
     }
   },
   created() {
@@ -206,7 +183,6 @@ export default {
       this.diaIsShow = true
       this.formData.order = (Math.random() * 10e18).toString()
       this.formData.id = this.allList.length + 1
-      this.editType = 'add'
       this.$nextTick(() => {
         this.$refs.diaForm.clearValidate()
       })
@@ -241,44 +217,12 @@ export default {
     // 编辑
     editTable(index, row) {
       this.formData = Object.assign({}, row)
-      this.editType = 'update'
       this.diaIsShow = true
       this.$nextTick(() => {
         this.$refs.diaForm.clearValidate()
       })
       this.rowIndex = index
     },
-    changeTab(form, type) {
-      this.$refs[form].validate(valid => {
-        if (valid) {
-          if (type === 'update') {
-            // 改变整个表格数据
-            let start = (this.currentPage - 1) * this.pageSize
-            this.allList[start + this.rowIndex] = Object.assign(
-              {},
-              this.formData
-            )
-            // 解决数组不能通过索引响应数据变化
-            this.$set(
-              this.tableData,
-              this.rowIndex,
-              Object.assign({}, this.formData)
-            )
-            this.$notify({
-              title: '成功',
-              message: '订单已修改成功',
-              type: 'success'
-            })
-          } else {
-            this.tableData.unshift(Object.assign({}, this.formData))
-            this.allList.push(Object.assign({}, this.formData))
-          }
-          this.diaIsShow = false
-        } else {
-          return
-        }
-      })
-    }
   }
 }
 </script>
