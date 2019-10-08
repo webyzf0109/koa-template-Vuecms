@@ -43,6 +43,18 @@ export const currencyRoutes = [
         name: 'activity',
         component: () => import('@/views/activity'),
         meta: { title: '活动管理', icon: 'el-icon-s-data' }
+      },
+      {
+        path: '/category',
+        name: 'category',
+        component: () => import('@/views/category'),
+        meta: { title: '分类管理', icon: 'el-icon-s-data' }
+      },
+      {
+        path: '/goods',
+        name: 'goods',
+        component: () => import('@/views/goods'),
+        meta: { title: '商品管理', icon: 'el-icon-s-data' }
       }
     ]
   }
