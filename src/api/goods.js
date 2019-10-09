@@ -30,3 +30,7 @@ export function editGoods(params) {
   return $axios.get(url,params)
 }
 
+export function upload(params) {
+  const url = '/v1/upload'
+  return $axios.post(url,params)
+}

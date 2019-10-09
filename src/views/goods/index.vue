@@ -17,6 +17,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名称"></el-table-column>
+        <el-table-column prop="name" label="商品图片">
+          <template slot-scope="scope">
+            <img width="80" :src="scope.row.url" alt="">
+          </template>
+        </el-table-column>
         <el-table-column prop="rule" label="规格"></el-table-column>
         <el-table-column prop="price" label="单价"></el-table-column>
         <el-table-column label="操作" width="180">
@@ -52,6 +57,14 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="商品图片" prop="url" ref="url">
+          <v-upload :dataList="formData.url" @uploadChildSay="uploadChildSay"></v-upload>
+          <el-input
+            style="display:none;"
+            v-if="formData.url.length>0"
+            v-model="formData.url[0].imgPath"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="商品价格" prop="price">
           <el-input-number v-model="formData.price" :min="0" label="价格"></el-input-number>
         </el-form-item>
@@ -68,8 +81,8 @@
 </template>
 
 <script>
+import upload from "@/components/Upload/index.vue";
 import {
-  webGetList,
   getList,
   getCategoryList,
   addGoods,
@@ -77,7 +90,17 @@ import {
   editGoods
 } from "@/api/goods";
 export default {
+  components: {
+    "v-upload": upload
+  },
   data() {
+    const validatordataList = (rule, value, callback) => {
+      if (value.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择图片"));
+      }
+    };
     return {
       tableData: [],
       name: "",
@@ -86,7 +109,9 @@ export default {
       total: 0,
       rowss: [10, 20, 30, 40],
       diaIsShow: false,
-      formData: {},
+      formData: {
+        url:[]
+      },
       editType: "",
       categoryList: [
         
@@ -97,6 +122,7 @@ export default {
         category_type:[{required: true, message: "请选择商品类别", trigger: "change"}],
         price: [{ required: true, message: "请输入商品价格", trigger: "change" }],
         rule: [{ required: true, message: "请输入商品规格", trigger: "change" }],
+        url: [{ required: true, validator: validatordataList }]
       }
     };
   },
@@ -120,7 +146,7 @@ export default {
       (this.page = val), this.getList();
     },
     getList() {
-      webGetList({
+      getList({
         page: this.page,
         rows: this.rows,
         name: this.name
@@ -136,7 +162,9 @@ export default {
     },
     // add
     addTab() {
-      this.formData = {};
+      this.formData = {
+        url:[]
+      };
       this.diaIsShow = true;
       this.editType = "add";
       this.$nextTick(() => {
@@ -162,6 +190,13 @@ export default {
         });
       });
     },
+    //上传图片callback
+    uploadChildSay(img) {
+      this.formData.url = img;
+      if (this.formData.url.length > 0) {
+        this.$refs["url"].clearValidate();
+      }
+    },
     changeTab(form, type) {
       this.$refs[form].validate(valid => {
         if (valid) {
@@ -177,9 +212,11 @@ export default {
               this.getList();
             });
           } else {
+            console.log(this.formData.url)
             addGoods({
               name: this.formData.name,
               category_type:this.formData.category_type,
+              url:this.formData.url[0].imgPath,
               price:this.formData.price,
               rule:this.formData.rule
             }).then(res => {
