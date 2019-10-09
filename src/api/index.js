@@ -10,14 +10,18 @@ axios.defaults.timeout = 30000
 Vue.prototype.$http = axios // 并发请求
 // 在全局请求和响应拦截器中添加请求状态
 let loading = null
-
+import {
+  Base64
+} from '@/api/base64.js'
 // 请求拦截器
 axios.interceptors.request.use(
   config => {
     loading = Loading.service({ text: '拼命加载中' })
-    const token = store.getters.token
+    const token = store.getters.token;
+    const base64 = new Base64()
+    const result = base64.encode(token + ':')
     if (token) {
-      config.headers.Authorization = token // 请求头部添加token
+      config.headers.Authorization = 'Basic ' + result; // 请求头部添加token
     }
     return config
   },
@@ -42,7 +46,6 @@ axios.interceptors.response.use(
     if (loading) {
       loading.close()
     }
-    console.log(error.response)
     if (error.response) {
       switch (error.response.status) {
         case 401:
@@ -59,7 +62,12 @@ axios.interceptors.response.use(
           Message.error('网络请求不存在')
           break
         default:
-          Message.error(error.response.data.message)
+          if (typeof error.response.data.message == "string") {
+            Message.error(error.response.data.message)
+          } else if (typeof error.response.data.message == "array") {
+            Message.error(error.response.data.message[0])
+          }
+
       }
     } else {
       // 请求超时或者网络有问题
