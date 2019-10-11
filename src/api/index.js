@@ -48,8 +48,8 @@ axios.interceptors.response.use(
     }
     if (error.response) {
       switch (error.response.status) {
-        case 401:
-          // 返回401 清除token信息并跳转到登陆页面
+        case 403:
+          // 返回403 清除token信息并跳转到登陆页面
           store.commit('DEL_TOKEN')
           router.replace({
             path: '/login',

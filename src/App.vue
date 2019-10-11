@@ -10,4 +10,12 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.click-color{
+  color: #409EFF;
+  display: block;
+  font-size: 12px;
+  margin-top:10px;
+  cursor: pointer;
+}
+</style>

@@ -55,6 +55,12 @@ export const currencyRoutes = [
         name: 'goods',
         component: () => import('@/views/goods'),
         meta: { title: '商品管理', icon: 'el-icon-s-data' }
+      },
+      {
+        path: '/yuyue',
+        name: 'yuyue',
+        component: () => import('@/views/yuyue'),
+        meta: { title: '预约管理', icon: 'el-icon-s-data' }
       }
     ]
   }
