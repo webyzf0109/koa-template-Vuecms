@@ -6,29 +6,44 @@
       </div>
       <div class="searchDiv">
         <el-input type="text" placeholder="请输入预约人名字" class="width1" v-model="name"></el-input>
+        <el-select v-model="currentCategory" placeholder="请选择商品分类" class="width1">
+          <el-option
+            v-for="item in categoryList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>  
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
       <el-table :data="tableData" border stripe>
         <el-table-column label="序号" type="index" width="50"></el-table-column>
         <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-        <el-table-column prop="phone" label="电话" width="100"></el-table-column>
-        <el-table-column prop="time" label="预约时间" width="100"></el-table-column>
+        <el-table-column prop="phone" label="电话" width="120"></el-table-column>
+        <el-table-column prop="time" label="预约时间" width="160">
+          <template slot-scope="scope">{{ scope.row.time | dateFormat }}</template>
+        </el-table-column>
         <el-table-column label="预约商品">
           <template slot-scope="scope">
             <img style="width:80px;" :src="scope.row.Good.goodsUrl" alt />
             <div>
-              <p>{{scope.row.Good.goodsName}}</p>
-              <p>￥{{scope.row.Good.goodsPrice}}</p>
+              <p>{{ scope.row.Good.goodsName }}</p>
+              <p>￥{{ scope.row.Good.goodsPrice }} x {{ scope.row.count }}</p>
+              <p>总计：￥{{ scope.row.Good.goodsPrice * scope.row.count }}</p>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="付款状态">
           <template slot-scope="scope">
             <div class="flex-column">
-              <el-tag>{{scope.row.payState==0?'待付款':'已付款'}}</el-tag>
+              <el-tag>
+                {{
+                scope.row.payState == 0 ? '待付款' : '已付款'
+                }}
+              </el-tag>
               <span
-                v-if="scope.row.payState==0"
+                v-if="scope.row.payState == 0"
                 class="click-color"
                 @click="onEditPayState(scope.row.id)"
               >修改为已付款</span>
@@ -37,7 +52,7 @@
         </el-table-column>
         <el-table-column label="订单备注">
           <template slot-scope="scope">
-            <p>{{scope.row.remark}}</p>
+            <p>{{ scope.row.remark }}</p>
             <span class="click-color" @click="editTable(scope.$index, scope.row)">修改订单备注</span>
           </template>
         </el-table-column>
@@ -69,6 +84,7 @@
 
 <script>
 import { getList, editOrderRemark, editPayState } from "@/api/yuyue";
+import { getCategoryAllName } from "@/api/category"
 export default {
   data() {
     return {
@@ -87,29 +103,39 @@ export default {
         { label: "上线中", value: 1 },
         { label: "下线中", value: 2 }
       ],
+      categoryList:[],
       rowIndex: 0,
       rules: {
         remark: [
           { required: true, message: "请输入订单备注", trigger: "change" }
         ]
-      }
+      },
+      currentCategory:'',
     };
   },
   created() {
     this.getList();
+    this.getCategoryAllName();
   },
   methods: {
+    getCategoryAllName(){
+      getCategoryAllName().then(res=>{
+        this.categoryList=res;
+      })
+    },
     handleSize(val) {
       (this.rows = val), this.getList();
     },
     handlePage(val) {
-      (this.page = val), this.getList();
+      this.page = val;
+      window.scroll(0, 0);
+      this.getList();
     },
     getList() {
       getList({
         page: this.page,
         rows: this.rows,
-        name: this.name
+        name: this.name,
       }).then(res => {
         this.tableData = res.rows;
         this.total = res.count;

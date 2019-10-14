@@ -86,7 +86,6 @@
       >
       </el-pagination>
     </el-card>
-    
   </div>
 </template>
 
@@ -109,7 +108,7 @@ export default {
         { label: '上架中', value: 1 },
         { label: '下架中', value: 2 }
       ],
-      rowIndex: 0,
+      rowIndex: 0
     }
   },
   created() {
@@ -222,7 +221,7 @@ export default {
         this.$refs.diaForm.clearValidate()
       })
       this.rowIndex = index
-    },
+    }
   }
 }
 </script>

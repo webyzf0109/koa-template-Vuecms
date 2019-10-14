@@ -5,9 +5,21 @@
         <span>分类列表</span>
       </div>
       <div class="searchDiv">
-        <el-input type="text" placeholder="请输入分类名称" class="width1" v-model="name"></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
+        <el-input
+          type="text"
+          placeholder="请输入分类名称"
+          class="width1"
+          v-model="name"
+        ></el-input>
+        <el-button type="primary" icon="el-icon-search" @click="searchTab()"
+          >搜索</el-button
+        >
+        <el-button
+          type="primary"
+          icon="el-icon-circle-plus-outline"
+          @click="addTab"
+          >添加</el-button
+        >
       </div>
       <el-table :data="tableData" border stripe>
         <el-table-column label="序号" type="index" width="50"></el-table-column>
@@ -15,8 +27,14 @@
         <el-table-column prop="create_time" label="创建时间"></el-table-column>
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
-            <el-button type="warning" @click="editTable(scope.$index, scope.row)">修改</el-button>
-            <el-button type="warning" @click="romoveItem(scope.row.id)">删除</el-button>
+            <el-button
+              type="warning"
+              @click="editTable(scope.$index, scope.row)"
+              >修改</el-button
+            >
+            <el-button type="warning" @click="romoveItem(scope.row.id)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -32,12 +50,19 @@
       ></el-pagination>
     </el-card>
     <el-dialog title="分类管理" :visible.sync="diaIsShow" class="diaForm">
-      <el-form ref="diaForm" :model="formData" :rules="rules" label-width="140px">
+      <el-form
+        ref="diaForm"
+        :model="formData"
+        :rules="rules"
+        label-width="140px"
+      >
         <el-form-item label="分类名称" prop="name">
           <el-input type="text" v-model="formData.name"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="changeTab('diaForm', editType)">确认</el-button>
+          <el-button type="primary" @click="changeTab('diaForm', editType)"
+            >确认</el-button
+          >
           <el-button @click="diaIsShow = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -51,41 +76,41 @@ import {
   addCategory,
   removeCategory,
   editCategory
-} from "@/api/category";
+} from '@/api/category'
 export default {
   data() {
     return {
       tableData: [],
       allList: [],
       schArr: [],
-      name: "",
+      name: '',
       page: 1,
       rows: 10,
       total: 0,
       rowss: [10, 20, 30, 40],
       diaIsShow: false,
       formData: {},
-      editType: "",
+      editType: '',
       options: [
-        { label: "全部", value: "" },
-        { label: "上线中", value: 1 },
-        { label: "下线中", value: 2 }
+        { label: '全部', value: '' },
+        { label: '上线中', value: 1 },
+        { label: '下线中', value: 2 }
       ],
       rowIndex: 0,
       rules: {
-        name: [{ required: true, message: "请输入姓名", trigger: "change" }]
+        name: [{ required: true, message: '请输入姓名', trigger: 'change' }]
       }
-    };
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     handleSize(val) {
-      (this.rows = val), this.getList();
+      ;(this.rows = val), this.getList()
     },
     handlePage(val) {
-      (this.page = val), this.getList();
+      ;(this.page = val), this.getList()
     },
     getList() {
       getList({
@@ -93,70 +118,70 @@ export default {
         rows: this.rows,
         name: this.name
       }).then(res => {
-        this.tableData = res.rows;
-        this.total = res.count;
-      });
+        this.tableData = res.rows
+        this.total = res.count
+      })
     },
     // 查找
     searchTab() {
-      this.page = 1;
-      this.getList();
+      this.page = 1
+      this.getList()
     },
     // add
     addTab() {
-      this.formData = {};
-      this.diaIsShow = true;
-      this.editType = "add";
+      this.formData = {}
+      this.diaIsShow = true
+      this.editType = 'add'
       this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
+        this.$refs.diaForm.clearValidate()
+      })
     },
     // 编辑
     editTable(index, row) {
-      this.formData = Object.assign({}, row);
-      this.editType = "update";
-      this.diaIsShow = true;
+      this.formData = Object.assign({}, row)
+      this.editType = 'update'
+      this.diaIsShow = true
       this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
-      this.rowIndex = index;
+        this.$refs.diaForm.clearValidate()
+      })
+      this.rowIndex = index
     },
     //删除
     romoveItem(id) {
-      this.$confirm("确定删除该分类?", "提示").then(res => {
+      this.$confirm('确定删除该分类?', '提示').then(res => {
         removeCategory({ id: id }).then(res => {
-          this.$message.success("删除成功");
-          this.getList();
-        });
-      });
+          this.$message.success('删除成功')
+          this.getList()
+        })
+      })
     },
     changeTab(form, type) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          if (type === "update") {
+          if (type === 'update') {
             editCategory({
               id: this.formData.id,
               name: this.formData.name
             }).then(res => {
-              this.$message.success("修改成功");
-              this.getList();
-            });
+              this.$message.success('修改成功')
+              this.getList()
+            })
           } else {
             addCategory({
               name: this.formData.name
             }).then(res => {
-              this.$message.success("新增成功");
-              this.getList();
-            });
+              this.$message.success('新增成功')
+              this.getList()
+            })
           }
-          this.diaIsShow = false;
+          this.diaIsShow = false
         } else {
-          return;
+          return
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .fyDiv {
@@ -187,7 +212,7 @@ export default {
 <style lang="scss">
 .anoCard {
   .el-card__body:after {
-    content: "";
+    content: '';
     clear: both;
     width: 0;
     height: 0;
@@ -198,7 +223,7 @@ export default {
 .diaForm .el-form-item__label {
   padding-right: 20px;
 }
-.searchDiv [class^="el-icon"] {
+.searchDiv [class^='el-icon'] {
   color: #fff;
 }
 </style>

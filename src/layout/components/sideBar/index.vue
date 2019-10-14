@@ -28,7 +28,8 @@
                 v-for="(childItem, childIndex) in item.list"
                 :key="childIndex"
                 :index="childItem.id.toString()"
-              >{{ childItem.name }}</el-menu-item>
+                >{{ childItem.name }}</el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
         </el-row>
@@ -42,26 +43,26 @@ export default {
   computed: {},
   data() {
     return {
-      activeIndex: "0",
+      activeIndex: '0',
       roles: []
-    };
+    }
   },
   created() {
-    this.roles = JSON.parse(sessionStorage.getItem("roles"));
+    this.roles = JSON.parse(sessionStorage.getItem('roles'))
     if (this.roles[0].list) {
-      this.activeIndex = this.roles[0].list[0].id.toString();
+      this.activeIndex = this.roles[0].list[0].id.toString()
     } else {
-      this.activeIndex = this.roles[0].id.toString();
+      this.activeIndex = this.roles[0].id.toString()
     }
   },
   methods: {
     handleChildrenClick(item, index) {
-      this.navListChildIndex = index;
-      this.activeIndex = item.id.toString();
-      this.$router.push(item.path);
+      this.navListChildIndex = index
+      this.activeIndex = item.id.toString()
+      this.$router.push(item.path)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

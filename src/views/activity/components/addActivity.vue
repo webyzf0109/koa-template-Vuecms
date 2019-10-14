@@ -15,50 +15,49 @@
 export default {
   data() {
     return {
-      title: "添加标题",
+      title: '添加标题',
       diaIsShow: true,
       formData: {
-        name: ""
+        name: ''
       },
       rules: {
-        name: [{ required: true, message: "请输入姓名", trigger: "change" }]
+        name: [{ required: true, message: '请输入姓名', trigger: 'change' }]
       }
-    };
+    }
   },
   methods: {
     changeTab(form, type) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          if (type === "update") {
+          if (type === 'update') {
             // 改变整个表格数据
-            let start = (this.currentPage - 1) * this.pageSize;
+            let start = (this.currentPage - 1) * this.pageSize
             this.allList[start + this.rowIndex] = Object.assign(
               {},
               this.formData
-            );
+            )
             // 解决数组不能通过索引响应数据变化
             this.$set(
               this.tableData,
               this.rowIndex,
               Object.assign({}, this.formData)
-            );
+            )
             this.$notify({
-              title: "成功",
-              message: "订单已修改成功",
-              type: "success"
-            });
+              title: '成功',
+              message: '订单已修改成功',
+              type: 'success'
+            })
           } else {
-            this.tableData.unshift(Object.assign({}, this.formData));
-            this.allList.push(Object.assign({}, this.formData));
+            this.tableData.unshift(Object.assign({}, this.formData))
+            this.allList.push(Object.assign({}, this.formData))
           }
-          this.diaIsShow = false;
+          this.diaIsShow = false
         } else {
-          return;
+          return
         }
-      });
+      })
     }
   }
-};
+}
 </script>
-<style lang="less">
-</style>
+<style lang="less"></style>

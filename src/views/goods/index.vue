@@ -6,6 +6,14 @@
       </div>
       <div class="searchDiv">
         <el-input type="text" placeholder="请输入商品名称" class="width1" v-model="name"></el-input>
+        <el-select v-model="currentCategory" placeholder="请选择商品分类" class="width1">
+          <el-option
+            v-for="item in categoryList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>  
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
@@ -13,13 +21,13 @@
         <el-table-column label="序号" type="index" width="50"></el-table-column>
         <el-table-column prop="name" label="商品类型">
           <template slot-scope="scope">
-            <el-tag>{{scope.row.Category.category_name}}</el-tag>
+            <el-tag>{{ scope.row.Category.category_name }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名称"></el-table-column>
         <el-table-column prop="name" label="商品图片">
           <template slot-scope="scope">
-            <img width="80" :src="scope.row.url" alt="">
+            <img width="80" :src="scope.row.url" alt />
           </template>
         </el-table-column>
         <el-table-column prop="rule" label="规格"></el-table-column>
@@ -53,15 +61,15 @@
               v-for="item in categoryList"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
-            </el-option>
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="商品图片" prop="url" ref="url">
           <v-upload :dataList="formData.url" @uploadChildSay="uploadChildSay"></v-upload>
           <el-input
             style="display:none;"
-            v-if="formData.url.length>0"
+            v-if="formData.url.length > 0"
             v-model="formData.url[0].imgPath"
           ></el-input>
         </el-form-item>
@@ -84,11 +92,11 @@
 import upload from "@/components/Upload/index.vue";
 import {
   getList,
-  getCategoryList,
   addGoods,
   removeGoods,
   editGoods
 } from "@/api/goods";
+import { getCategoryAllName } from "@/api/category"
 export default {
   components: {
     "v-upload": upload
@@ -110,34 +118,38 @@ export default {
       rowss: [10, 20, 30, 40],
       diaIsShow: false,
       formData: {
-        url:[]
+        url: []
       },
       editType: "",
-      categoryList: [
-        
-      ],
       rowIndex: 0,
       rules: {
-        name: [{ required: true, message: "请输入商品名称", trigger: "change" }],
-        category_type:[{required: true, message: "请选择商品类别", trigger: "change"}],
-        price: [{ required: true, message: "请输入商品价格", trigger: "change" }],
-        rule: [{ required: true, message: "请输入商品规格", trigger: "change" }],
+        name: [
+          { required: true, message: "请输入商品名称", trigger: "change" }
+        ],
+        category_type: [
+          { required: true, message: "请选择商品类别", trigger: "change" }
+        ],
+        price: [
+          { required: true, message: "请输入商品价格", trigger: "change" }
+        ],
+        rule: [
+          { required: true, message: "请输入商品规格", trigger: "change" }
+        ],
         url: [{ required: true, validator: validatordataList }]
-      }
+      },
+      currentCategory: "",
+      categoryList: []
     };
   },
   created() {
-    this.getCategoryList();
+    this.getCategoryAllName();
     this.getList();
   },
   methods: {
-    getCategoryList(){
-      getCategoryList({
-        page:1,
-        rows:20,
-      }).then(res=>{
-        this.categoryList=res.rows;
-      })
+    getCategoryAllName() {
+      getCategoryAllName().then(res => {
+        this.categoryList = res;
+      });
     },
     handleSize(val) {
       (this.rows = val), this.getList();
@@ -149,7 +161,8 @@ export default {
       getList({
         page: this.page,
         rows: this.rows,
-        name: this.name
+        name: this.name,
+        category_type: this.currentCategory
       }).then(res => {
         this.tableData = res.rows;
         this.total = res.count;
@@ -163,7 +176,7 @@ export default {
     // add
     addTab() {
       this.formData = {
-        url:[]
+        url: []
       };
       this.diaIsShow = true;
       this.editType = "add";
@@ -204,21 +217,21 @@ export default {
             editGoods({
               id: this.formData.id,
               name: this.formData.name,
-              category_type:this.formData.category_type,
-              price:this.formData.price,
-              rule:this.formData.rule
+              category_type: this.formData.category_type,
+              price: this.formData.price,
+              rule: this.formData.rule
             }).then(res => {
               this.$message.success("修改成功");
               this.getList();
             });
           } else {
-            console.log(this.formData.url)
+            console.log(this.formData.url);
             addGoods({
               name: this.formData.name,
-              category_type:this.formData.category_type,
-              url:this.formData.url[0].imgPath,
-              price:this.formData.price,
-              rule:this.formData.rule
+              category_type: this.formData.category_type,
+              url: this.formData.url[0].imgPath,
+              price: this.formData.price,
+              rule: this.formData.rule
             }).then(res => {
               this.$message.success("新增成功");
               this.getList();
