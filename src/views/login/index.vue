@@ -63,8 +63,8 @@ export default {
       text: '向右滑动',
       showSlide: false,
       ruleForm: {
-        account: '1213128156@qq.com',
-        secret: '123456&',
+        account: '',
+        secret: '',
         type: 101 //email 登录
       },
       rules: {

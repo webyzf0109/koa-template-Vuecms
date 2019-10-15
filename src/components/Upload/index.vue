@@ -1,93 +1,83 @@
 <template>
   <div class="uploadConfig">
-    <div
-      class="view"
-      v-if="imgUrl.length > 0"
-      v-for="(item, index) in imgUrl"
-      :key="index"
-    >
-      <img :src="item.imgPath" alt />
+    <div class="view" v-if="imgUrl.length > 0" v-for="(item, index) in imgUrl" :key="index">
+      <img :src="item" alt />
       <div class="pop">
         <i class="el-icon-zoom-in" @click="viewPhoto(index)"></i>
         <i class="el-icon-delete" @click="remove(index)"></i>
       </div>
     </div>
-    <div class="upload" v-if="imgUrl.length <= 0">
+    <div class="upload" v-if="imgUrl.length < 1">
       <i class="el-icon-plus"></i>
-      <input type="file" @change="handle($event)" name="img" />
+      <input type="file" multiple @change="handle($event)" name="img" />
     </div>
     <div class="elDialog">
-      <el-dialog
-        :visible.sync="dialogVisible"
-        :close-on-click-modal="false"
-        :append-to-body="true"
-      >
-        <img width="100%" v-if="dataList[idx]" :src="imgUrl[idx].imgPath" alt />
+      <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" :append-to-body="true">
+        <img width="100%" v-if="dataList[idx]" :src="imgUrl[idx]" alt />
       </el-dialog>
     </div>
   </div>
 </template>
 <script>
-import { upload } from '@/api/goods'
+import { upload } from "@/api/goods";
 export default {
   data() {
     return {
       imgUrl: [],
       dialogVisible: false,
       idx: 0
-    }
+    };
   },
-  props: ['dataList'],
+  props: ["dataList"],
   created() {
-    this.imgUrl = [{ imgPath: this.dataList }]
+    this.imgUrl = [this.dataList];
   },
   watch: {
     dataList: function(newValue, oldValue) {
-      this.imgUrl = newValue
+      this.imgUrl = [newValue];
     }
   },
   methods: {
     viewPhoto(index) {
-      this.idx = index
-      this.dialogVisible = true
+      this.idx = index;
+      this.dialogVisible = true;
     },
     remove(index) {
-      this.imgUrl.splice(index, 1)
+      this.imgUrl.splice(index, 1);
     },
     handle(e) {
-      let files = e.target.files
+      let files = e.target.files;
       for (let i = 0; i < files.length; i++) {
-        if (
-          files[i].type !== 'image/gif' &&
-          files[i].type !== 'image/png' &&
-          files[i].type !== 'image/jpeg' &&
-          files[i].type !== 'image/webp'
-        ) {
-          this.$message.error('上传文件格式不对')
-          return
-        } else if (files[i].size >= 2048000) {
-          this.$message.error('图片大小不得超过2M')
-          return
+        if(i>=1){
+           this.$message.error("最多上传5张图片");
+          return 
         }
-        let formdata = new FormData()
-        formdata.append('file', files[i])
-        upload(formdata)
-          .then(res => {
-            e.target.value = ''
-            let obj = { type: 2, imgPath: res.imgurl, coverType: 0 }
-            this.imgUrl.push(obj)
-            this.$emit('uploadChildSay', this.imgUrl)
-            if (this.imgUrl.length == files.length) {
-              this.$message.success('图片上传成功')
-            }
-          })
-          .catch(err => {
-            this.$store.state.isLogin = false
-          })
+        if (
+          files[i].type !== "image/gif" &&
+          files[i].type !== "image/png" &&
+          files[i].type !== "image/jpeg" &&
+          files[i].type !== "image/webp"
+        ) {
+          this.$message.error("上传文件格式不对");
+          return;
+        } else if (files[i].size >= 2048000) {
+          this.$message.error("图片大小不得超过2M");
+          return;
+        }
+        let formdata = new FormData();
+        formdata.append("file", files[i]);
+        upload(formdata).then(res => {
+          e.target.value = "";
+          this.imgUrl.push(res.imgurl);
+          this.$emit("uploadChildSay", this.imgUrl);
+          if (this.imgUrl.length == files.length) {
+            this.$message.success("图片上传成功");
+          }
+        });
       }
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .uploadConfig {

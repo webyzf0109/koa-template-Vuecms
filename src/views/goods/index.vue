@@ -70,7 +70,7 @@
           <el-input
             style="display:none;"
             v-if="formData.url.length > 0"
-            v-model="formData.url[0].imgPath"
+            v-model="formData.url[0]"
           ></el-input>
         </el-form-item>
         <el-form-item label="商品价格" prop="price">
@@ -187,6 +187,7 @@ export default {
     // 编辑
     editTable(index, row) {
       this.formData = Object.assign({}, row);
+      this.formData.url=row.url
       this.editType = "update";
       this.diaIsShow = true;
       this.$nextTick(() => {
@@ -205,7 +206,7 @@ export default {
     },
     //上传图片callback
     uploadChildSay(img) {
-      this.formData.url = img;
+      this.formData.url = img[0];
       if (this.formData.url.length > 0) {
         this.$refs["url"].clearValidate();
       }
@@ -219,17 +220,17 @@ export default {
               name: this.formData.name,
               category_type: this.formData.category_type,
               price: this.formData.price,
+              url: this.formData.url,
               rule: this.formData.rule
             }).then(res => {
               this.$message.success("修改成功");
               this.getList();
             });
           } else {
-            console.log(this.formData.url);
             addGoods({
               name: this.formData.name,
               category_type: this.formData.category_type,
-              url: this.formData.url[0].imgPath,
+              url: this.formData.url,
               price: this.formData.price,
               rule: this.formData.rule
             }).then(res => {

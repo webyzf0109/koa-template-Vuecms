@@ -6,14 +6,14 @@
       </div>
       <div class="searchDiv">
         <el-input type="text" placeholder="请输入预约人名字" class="width1" v-model="name"></el-input>
-        <el-select v-model="currentCategory" placeholder="请选择商品分类" class="width1">
+        <el-select v-model="currentYuyueState" placeholder="请选择预约状态" class="width1">
           <el-option
-            v-for="item in categoryList"
+            v-for="item in yuyueList"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>  
+            :value="item.id"
+          ></el-option>
+        </el-select>
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
@@ -37,16 +37,19 @@
         <el-table-column label="付款状态">
           <template slot-scope="scope">
             <div class="flex-column">
-              <el-tag>
-                {{
-                scope.row.payState == 0 ? '待付款' : '已付款'
-                }}
-              </el-tag>
+              <el-tag v-if="scope.row.payState == 0" type="info" >待付款</el-tag>
+              <el-tag v-if="scope.row.payState == 1" type="danger">已付款,待取货</el-tag>
+              <el-tag v-if="scope.row.payState == 2">已完成</el-tag>
               <span
                 v-if="scope.row.payState == 0"
                 class="click-color"
-                @click="onEditPayState(scope.row.id)"
+                @click="onEditPayState(scope.row.id,1)"
               >修改为已付款</span>
+              <span
+                v-if="scope.row.payState == 1"
+                class="click-color"
+                @click="onEditPayState(scope.row.id,2)"
+              >修改为已完成</span>
             </div>
           </template>
         </el-table-column>
@@ -84,7 +87,7 @@
 
 <script>
 import { getList, editOrderRemark, editPayState } from "@/api/yuyue";
-import { getCategoryAllName } from "@/api/category"
+import { getCategoryAllName } from "@/api/category";
 export default {
   data() {
     return {
@@ -98,19 +101,19 @@ export default {
       rowss: [10, 20, 30, 40],
       diaIsShow: false,
       formData: {},
-      options: [
-        { label: "全部", value: "" },
-        { label: "上线中", value: 1 },
-        { label: "下线中", value: 2 }
+      yuyueList:[
+        {id:'',name:'全部状态'},
+        {id:0,name:'待付款'},
+        {id:1,name:'已付款,待取货'},
+        {id:2,name:'已完成'},
       ],
-      categoryList:[],
       rowIndex: 0,
       rules: {
         remark: [
           { required: true, message: "请输入订单备注", trigger: "change" }
         ]
       },
-      currentCategory:'',
+      currentYuyueState:""
     };
   },
   created() {
@@ -118,10 +121,10 @@ export default {
     this.getCategoryAllName();
   },
   methods: {
-    getCategoryAllName(){
-      getCategoryAllName().then(res=>{
-        this.categoryList=res;
-      })
+    getCategoryAllName() {
+      getCategoryAllName().then(res => {
+        this.categoryList = res;
+      });
     },
     handleSize(val) {
       (this.rows = val), this.getList();
@@ -136,6 +139,8 @@ export default {
         page: this.page,
         rows: this.rows,
         name: this.name,
+        type: 1,
+        payState:this.currentYuyueState
       }).then(res => {
         this.tableData = res.rows;
         this.total = res.count;
@@ -188,11 +193,11 @@ export default {
         }
       });
     },
-    onEditPayState(id) {
-      this.$confirm("确定该用户已经付款?", "提示").then(res => {
+    onEditPayState(id,state) {
+      this.$confirm(state==1?"确定该用户已经付款?":"确定该用户已经取货", "提示").then(res => {
         editPayState({
           id: id,
-          payState: 1
+          payState: state
         }).then(res => {
           this.$message.success("修改成功");
           this.getList();
