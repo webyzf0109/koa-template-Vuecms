@@ -11,34 +11,22 @@
             v-for="item in categoryList"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>  
+            :value="item.id"
+          ></el-option>
+        </el-select>
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
-      <el-table :data="tableData" border stripe>
-        <el-table-column label="序号" type="index" width="50"></el-table-column>
-        <el-table-column prop="name" label="商品类型">
-          <template slot-scope="scope">
-            <el-tag>{{ scope.row.Category.category_name }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="商品名称"></el-table-column>
-        <el-table-column prop="name" label="商品图片">
-          <template slot-scope="scope">
-            <img width="80" :src="scope.row.url" alt />
-          </template>
-        </el-table-column>
-        <el-table-column prop="rule" label="规格"></el-table-column>
-        <el-table-column prop="price" label="单价"></el-table-column>
-        <el-table-column label="操作" width="180">
-          <template slot-scope="scope">
-            <el-button type="warning" @click="editTable(scope.$index, scope.row)">修改</el-button>
-            <el-button type="warning" @click="romoveItem(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+
+      <y-table :tableData="tableData" :tableModel="tableModel">
+        <template slot="operation1" slot-scope="scope">
+          <el-tag>{{scope.scope.row.Category.category_name}}</el-tag>
+        </template>
+        <template slot="operation2" slot-scope="scope">
+          <img width="80" :src="scope.scope.row.url" alt />
+        </template>
+      </y-table>
+
       <el-pagination
         background
         layout="total, sizes, prev, pager, next"
@@ -67,11 +55,7 @@
         </el-form-item>
         <el-form-item label="商品图片" prop="url" ref="url">
           <v-upload :dataList="formData.url" @uploadChildSay="uploadChildSay"></v-upload>
-          <el-input
-            style="display:none;"
-            v-if="formData.url.length > 0"
-            v-model="formData.url[0]"
-          ></el-input>
+          <el-input style="display:none;" v-if="formData.url.length > 0" v-model="formData.url[0]"></el-input>
         </el-form-item>
         <el-form-item label="商品价格" prop="price">
           <el-input-number v-model="formData.price" :min="0" label="价格"></el-input-number>
@@ -90,13 +74,8 @@
 
 <script>
 import upload from "@/components/Upload/index.vue";
-import {
-  getList,
-  addGoods,
-  removeGoods,
-  editGoods
-} from "@/api/goods";
-import { getCategoryAllName } from "@/api/category"
+import { getList, addGoods, removeGoods, editGoods } from "@/api/goods";
+import { getCategoryAllName } from "@/api/category";
 export default {
   components: {
     "v-upload": upload
@@ -111,6 +90,79 @@ export default {
     };
     return {
       tableData: [],
+      tableModel: [
+        {
+          type: "index",
+          label: "序号",
+          width: 50
+        },
+        {
+          slot: "operation1",
+          label: "商品类型",
+          minWidth: 100
+        },
+        {
+          label: "商品名称",
+          prop: "name",
+          minWidth: 200
+        },
+        {
+          slot: "operation2",
+          label: "商品图片",
+          minWidth: 100
+        },
+        {
+          label: "商品规格",
+          prop: "rule",
+          minWidth: 80
+        },
+        {
+          label: "商品单价",
+          prop: "price",
+          minWidth: 80
+        },
+        {
+          label: "操作",
+          minWidth: 150,
+          render: (h, params) => {
+            return [
+              h(
+                "a",
+                {
+                  class: {
+                    "link-type": true
+                  },
+                  attrs: {
+                    href: "javascript:;"
+                  },
+                  on: {
+                    click: () => {
+                      this.editTable(params.row);
+                    }
+                  }
+                },
+                "修改"
+              ),h(
+                "a",
+                {
+                  class: {
+                    "link-type": true
+                  },
+                  attrs: {
+                    href: "javascript:;"
+                  },
+                  on: {
+                    click: () => {
+                      this.romoveItem(params.row.id);
+                    }
+                  }
+                },
+                "删除"
+              ),
+            ];
+          }
+        }
+      ],
       name: "",
       page: 1,
       rows: 10,
@@ -121,7 +173,6 @@ export default {
         url: []
       },
       editType: "",
-      rowIndex: 0,
       rules: {
         name: [
           { required: true, message: "请输入商品名称", trigger: "change" }
@@ -185,15 +236,14 @@ export default {
       });
     },
     // 编辑
-    editTable(index, row) {
+    editTable(row) {
       this.formData = Object.assign({}, row);
-      this.formData.url=row.url
+      this.formData.url = row.url;
       this.editType = "update";
       this.diaIsShow = true;
       this.$nextTick(() => {
         this.$refs.diaForm.clearValidate();
       });
-      this.rowIndex = index;
     },
     //删除
     romoveItem(id) {

@@ -10,6 +10,9 @@ import './utils/filter.js'
 Vue.use(animated)
 // import SlideVerify from 'vue-monoplasty-slide-verify'
 
+import yzfwork from 'yzfwork'
+Vue.use(yzfwork)
+
 // Vue.use(SlideVerify)
 Vue.config.productionTip = false
 

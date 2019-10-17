@@ -17,49 +17,36 @@
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
-      <el-table :data="tableData" border stripe>
-        <el-table-column label="序号" type="index" width="50"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-        <el-table-column prop="phone" label="电话" width="120"></el-table-column>
-        <el-table-column prop="time" label="预约时间" width="160">
-          <template slot-scope="scope">{{ scope.row.time | dateFormat }}</template>
-        </el-table-column>
-        <el-table-column label="预约商品">
-          <template slot-scope="scope">
-            <img style="width:80px;" :src="scope.row.Good.goodsUrl" alt />
+
+      <y-table :tableData="tableData" :tableModel="tableModel">
+        <template slot="operation1" slot-scope="scope">{{scope.scope.row.time | dateFormat}}</template>
+        <template slot="operation2" slot-scope="scope">
+            <img style="width:80px;" :src="scope.scope.row.Good.goodsUrl" alt />
             <div>
-              <p>{{ scope.row.Good.goodsName }}</p>
-              <p>￥{{ scope.row.Good.goodsPrice }} x {{ scope.row.count }}</p>
-              <p>总计：￥{{ scope.row.Good.goodsPrice * scope.row.count }}</p>
+              <p>{{ scope.scope.row.Good.goodsName }}</p>
+              <p>￥{{ scope.scope.row.Good.goodsPrice }} x {{ scope.scope.row.count }}</p>
+              <p>总计：￥{{ scope.scope.row.Good.goodsPrice * scope.scope.row.count }}</p>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column label="付款状态">
-          <template slot-scope="scope">
+          <template slot="operation3" slot-scope="scope">
             <div class="flex-column">
-              <el-tag v-if="scope.row.payState == 0" type="info" >待付款</el-tag>
-              <el-tag v-if="scope.row.payState == 1" type="danger">已付款,待取货</el-tag>
-              <el-tag v-if="scope.row.payState == 2">已完成</el-tag>
+              <el-tag v-if="scope.scope.row.payState == 0" type="info" >待付款</el-tag>
+              <el-tag v-if="scope.scope.row.payState == 1" type="danger">已付款,待取货</el-tag>
+              <el-tag v-if="scope.scope.row.payState == 2">已完成</el-tag>
               <span
-                v-if="scope.row.payState == 0"
+                v-if="scope.scope.row.payState == 0"
                 class="click-color"
-                @click="onEditPayState(scope.row.id,1)"
+                @click="onEditPayState(scope.scope.row.id,1)"
               >修改为已付款</span>
               <span
-                v-if="scope.row.payState == 1"
+                v-if="scope.scope.row.payState == 1"
                 class="click-color"
-                @click="onEditPayState(scope.row.id,2)"
+                @click="onEditPayState(scope.scope.row.id,2)"
               >修改为已完成</span>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column label="订单备注">
-          <template slot-scope="scope">
-            <p>{{ scope.row.remark }}</p>
-            <span class="click-color" @click="editTable(scope.$index, scope.row)">修改订单备注</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      </y-table>
+      
       <el-pagination
         background
         layout="total, sizes, prev, pager, next"
@@ -92,8 +79,66 @@ export default {
   data() {
     return {
       tableData: [],
-      allList: [],
-      schArr: [],
+      tableModel: [
+        {
+          type: "index",
+          label: "序号",
+          width: 50
+        },
+        {
+          prop:'name',
+          label: "姓名",
+          minWidth: 100
+        },
+        {
+          label: "电话",
+          prop: "phone",
+          minWidth: 100
+        },
+        {
+          slot: "operation1",
+          label: "预约时间",
+          minWidth: 100
+        },
+        {
+          label: "预约商品",
+          slot:'operation2',
+          minWidth: 120
+        },
+        {
+          label: "付款状态",
+          slot:'operation3',
+          minWidth: 100
+        },
+        {
+          label: "操作",
+          minWidth: 150,
+          render: (h, params) => {
+            return [
+              h(
+                "div",
+                params.row.remark
+              ),h(
+                "a",
+                {
+                  class: {
+                    "link-type": true
+                  },
+                  attrs: {
+                    href: "javascript:;"
+                  },
+                  on: {
+                    click: () => {
+                      this.editTable(params.row);
+                    }
+                  }
+                },
+                "修改订单备注"
+              ),
+            ];
+          }
+        }
+      ],
       name: "",
       page: 1,
       rows: 10,
@@ -107,7 +152,6 @@ export default {
         {id:1,name:'已付款,待取货'},
         {id:2,name:'已完成'},
       ],
-      rowIndex: 0,
       rules: {
         remark: [
           { required: true, message: "请输入订单备注", trigger: "change" }
@@ -160,13 +204,12 @@ export default {
       });
     },
     // 编辑
-    editTable(index, row) {
+    editTable(row) {
       this.formData = Object.assign({}, row);
       this.diaIsShow = true;
       this.$nextTick(() => {
         this.$refs.diaForm.clearValidate();
       });
-      this.rowIndex = index;
     },
     //删除
     romoveItem(id) {
