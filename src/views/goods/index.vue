@@ -38,48 +38,29 @@
         @current-change="handlePage"
       ></el-pagination>
     </el-card>
+
     <el-dialog title="商品管理" :visible.sync="diaIsShow" class="diaForm">
-      <el-form ref="diaForm" :model="formData" :rules="rules" label-width="140px">
-        <el-form-item label="商品名称" prop="name">
-          <el-input type="text" v-model="formData.name"></el-input>
-        </el-form-item>
-        <el-form-item label="商品分类" prop="category_type">
-          <el-select v-model="formData.category_type" placeholder="请选择商品分类">
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商品图片" prop="url" ref="url">
-          <v-upload :dataList="formData.url" @uploadChildSay="uploadChildSay"></v-upload>
-          <el-input style="display:none;" v-if="formData.url.length > 0" v-model="formData.url[0]"></el-input>
-        </el-form-item>
-        <el-form-item label="商品价格" prop="price">
-          <el-input-number v-model="formData.price" :min="0" label="价格"></el-input-number>
-        </el-form-item>
-        <el-form-item label="商品规格" prop="rule">
-          <el-input type="text" v-model="formData.rule"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="changeTab('diaForm', editType)">确认</el-button>
+      <y-form
+        :labelWidth="140"
+        ref="iforms"
+        :formData="formData"
+        :formModel="inLine_FormModel"
+        formName="inLine"
+        v-if="isReady"
+      >
+        <div slot="iform-btns">
+          <el-button type="primary" @click="changeTab('iforms', editType)">确认</el-button>
           <el-button @click="diaIsShow = false">取消</el-button>
-        </el-form-item>
-      </el-form>
+        </div>
+      </y-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import upload from "@/components/Upload/index.vue";
 import { getList, addGoods, removeGoods, editGoods } from "@/api/goods";
 import { getCategoryAllName } from "@/api/category";
 export default {
-  components: {
-    "v-upload": upload
-  },
   data() {
     const validatordataList = (rule, value, callback) => {
       if (value.length > 0) {
@@ -142,7 +123,8 @@ export default {
                   }
                 },
                 "修改"
-              ),h(
+              ),
+              h(
                 "a",
                 {
                   class: {
@@ -158,7 +140,7 @@ export default {
                   }
                 },
                 "删除"
-              ),
+              )
             ];
           }
         }
@@ -172,14 +154,9 @@ export default {
       formData: {
         url: []
       },
+      isReady: false,
       editType: "",
       rules: {
-        name: [
-          { required: true, message: "请输入商品名称", trigger: "change" }
-        ],
-        category_type: [
-          { required: true, message: "请选择商品类别", trigger: "change" }
-        ],
         price: [
           { required: true, message: "请输入商品价格", trigger: "change" }
         ],
@@ -189,8 +166,68 @@ export default {
         url: [{ required: true, validator: validatordataList }]
       },
       currentCategory: "",
-      categoryList: []
+      categoryList: [],
+      inLine_FormModel: [
+        {
+          elemType: "input",
+          placeholder: "请输入商品名称",
+          maxlength: 30,
+          label: "商品名称：",
+          prop: "name",
+          rules: ["required"],
+          width: "250px"
+        },
+        {
+          elemType: "select",
+          label: "商品分类：",
+          placeholder: "请选择商品分类",
+          defaultValue: "",
+          width: "250px",
+          rules: ["required"],
+          prop: "category_type",
+          col: "name",
+          colVal: "id",
+          options: []
+        },
+        {
+          label: "上传图片：",
+          prop: "uploadUrl",
+          elemType: "upload",
+          rules: ["required"],
+          ref: "upload",
+          width: 60,
+          height: 60,
+          sizeWidth: 750,
+          sizeHeight: 750,
+          num: 1,
+          maxNum: 1,
+          uploadUrl: "/v1/upload"
+        },
+        {
+          elemType: "input",
+          placeholder: "请输入商品价格",
+          maxlength: 30,
+          label: "商品价格：",
+          prop: "price",
+          rules: ["required", "bNumber"],
+          width: "250px"
+        },
+        {
+          elemType: "input",
+          placeholder: "请输入商品规格",
+          maxlength: 30,
+          label: "商品规格：",
+          prop: "rule",
+          rules: ["required"],
+          width: "250px"
+        }
+      ]
     };
+  },
+  watch: {
+    diaIsShow: function(newValue, oldValue) {
+      this.isReady = newValue;
+    }
   },
   created() {
     this.getCategoryAllName();
@@ -200,6 +237,7 @@ export default {
     getCategoryAllName() {
       getCategoryAllName().then(res => {
         this.categoryList = res;
+        this.inLine_FormModel[1].options = res;
       });
     },
     handleSize(val) {
@@ -227,13 +265,10 @@ export default {
     // add
     addTab() {
       this.formData = {
-        url: []
+        // url: []
       };
       this.diaIsShow = true;
       this.editType = "add";
-      this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
     },
     // 编辑
     editTable(row) {
@@ -241,9 +276,6 @@ export default {
       this.formData.url = row.url;
       this.editType = "update";
       this.diaIsShow = true;
-      this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
     },
     //删除
     romoveItem(id) {
