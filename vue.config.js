@@ -5,7 +5,7 @@ const resolve = function(dir) {
 
 module.exports = {
   publicPath:
-    process.env.NODE_ENV === 'production' ? '/vue-admin-webapp/' : '/',
+    process.env.NODE_ENV === 'production' ? './' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false, // 是否开启eslint保存检测
@@ -27,7 +27,7 @@ module.exports = {
     },
     proxy: {
       '/v1': {
-        target: 'http://localhost:3000',
+        target: 'http://shop.yyyzf.xyz',
         changeOrigin: true,
         // ws: true,
         pathRewrite: {

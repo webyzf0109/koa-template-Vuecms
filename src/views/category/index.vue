@@ -201,7 +201,6 @@ export default {
     },
     changeTab(form, type) {
       let result=this.$refs['iforms'].getFormData();
-      console.log(result)
       if(result){
         if (type === "update") {
             editCategory({
