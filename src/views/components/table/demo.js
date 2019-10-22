@@ -160,6 +160,104 @@ const demoCode = {
           minWidth: 60,
           align: "left"
         }
-      ]
+      ],
+      demoTableModel2:[
+        {
+          label: "参数",
+          prop: "name",
+          minWidth: 100,
+          align: "left"
+        },
+        {
+          label: "说明",
+          prop: "description",
+          minWidth: 150,
+          align: "left"
+        },
+        {
+          label: "类型",
+          prop: "type",
+          minWidth: 150,
+          align: "left"
+        },
+        {
+          label: "可选值",
+          prop: "value",
+          minWidth: 200,
+          align: "left"
+        },
+        {
+          label: "默认值",
+          prop: "defaultValue",
+          minWidth: 100,
+          align: "left"
+        },
+        {
+          label: "是否必填",
+          prop: "isSure",
+          minWidth: 60,
+          align: "left"
+        }
+      ],
+      demoTableData2:[
+        {
+          name: "label",
+          description: "表头信息",
+          type: "String",
+          value: "——",
+          defaultValue: "——",
+          isSure: `true`
+        },
+        {
+          name: "prop",
+          description: "表头关联的字段",
+          type: "String",
+          value: "——",
+          defaultValue: "——",
+          isSure: `true`
+        },
+        {
+          name: "width",
+          description: "该字段的宽度",
+          type: "Number",
+          value: "——",
+          defaultValue: "——",
+          isSure: `false`
+        },
+        {
+          name: "minWidth",
+          description: "该字段的最小宽度",
+          type: "Number",
+          value: "——",
+          defaultValue: "——",
+          isSure: `false`
+        },
+        {
+          name: "align",
+          description: "该字段内容的对齐方式",
+          type: "String",
+          value: "left | center | right",
+          defaultValue: "——",
+          isSure: `false`
+        },
+        {
+          name: "formatter",
+          description: "格式化该字段内容",
+          type: "Function(h, params)",
+          value: `formatter(row, col, colVal) {
+            return colVal == 1 ? "正常" : "被禁用";
+          }`,
+          defaultValue: "——",
+          isSure: `false`
+        },
+        {
+          name: "render",
+          description: "复杂内容时(常用于编辑)",
+          type: "Function(h, params)",
+          value: `上面的例子`,
+          defaultValue: "——",
+          isSure: `false`
+        },
+      ],
 }
 export default demoCode;

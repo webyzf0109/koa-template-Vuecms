@@ -1,9 +1,9 @@
-.hljs-comment,
+/* .hljs-comment,
 .hljs-quote {
     color: #8e908c;
-}
+} */
 
-.hljs-variable,
+/* .hljs-variable,
 .hljs-template-variable,
 .hljs-tag,
 .hljs-name,
@@ -12,9 +12,9 @@
 .hljs-regexp,
 .hljs-deletion {
     color: #c82829;
-}
+} */
 
-.hljs-number,
+/* .hljs-number,
 .hljs-built_in,
 .hljs-builtin-name,
 .hljs-literal,
@@ -23,23 +23,23 @@
 .hljs-meta,
 .hljs-link {
     color: #f5871f;
-}
+} */
 
-.hljs-attribute {
+/* .hljs-attribute {
     color: #eab700;
-}
+} */
 
-.hljs-string,
+/* .hljs-string,
 .hljs-symbol,
 .hljs-bullet,
 .hljs-addition {
     color: #718c00;
-}
+} */
 
 code{
     font: 16px Consolas,Liberation Mono,Menlo,Courier,monospace;
 }
-.hljs-title,
+/* .hljs-title,
 .hljs-section {
     color: #4271ae;
 }
@@ -47,13 +47,12 @@ code{
 .hljs-keyword,
 .hljs-selector-tag {
     color: #8959a8;
-}
+} */
 
 .hljs {
     display: block;
     overflow-x: auto;
-    background: white;
-    color: #4d4d4c;
+    color: #ffffff;
     padding: 0.5em;
 }
 

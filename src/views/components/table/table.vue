@@ -12,6 +12,9 @@
     <h3>表格属性</h3>
     <y-table :tableData="tableData" :tableModel="tableModel" :border="false">
     </y-table>
+    <h3>tableModel属性</h3>
+    <y-table :tableData="tableData2" :tableModel="tableModel2" :border="false">
+    </y-table>
 </pre>
   </div>
 </template>
@@ -23,6 +26,8 @@ export default {
       code: demoCode.demoDefault(),
       tableData: demoCode.demoTableData,
       tableModel: demoCode.demoTableModel,
+      tableData2:demoCode.demoTableData2,
+      tableModel2:demoCode.demoTableModel2,
     };
   }
 };
