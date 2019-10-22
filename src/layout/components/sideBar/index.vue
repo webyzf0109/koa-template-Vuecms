@@ -20,6 +20,7 @@
           </el-menu-item>
           <el-submenu :index="item.id.toString()" v-if="item.list">
             <template slot="title">
+              <i class="el-icon-menu"></i>
               <span>{{ item.name }}</span>
             </template>
             <el-menu-item-group>

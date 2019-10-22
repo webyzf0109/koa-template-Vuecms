@@ -19,7 +19,7 @@
       </transition>
     </div>
     <div class="loginBox">
-      <h2 class="loginH2"><strong>Vue</strong> 后台管理系统</h2>
+      <h2 class="loginH2"><strong>yzfwork</strong> 文档演示及其介绍</h2>
       <div class="loginCon">
         <div class="titleDiv">
           <h3>Sign up now</h3>
@@ -121,7 +121,7 @@ export default {
     shopTip() {
       this.notifyObj = this.$notify({
         title: '提示',
-        message: '欢迎来到召唤师峡谷',
+        message: '欢迎来到yzfwork',
         duration: 0,
         iconClass: 'el-icon-s-opportunity'
       })

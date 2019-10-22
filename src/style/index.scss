@@ -45,7 +45,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-size: 100%;
+  // font-size: 100%;
   font-weight: normal;
 }
 a {
@@ -134,5 +134,24 @@ body {
     color: #ffc107;
     font-size: 22px;
     margin-top: 2px;
+  }
+}
+
+
+.background-white{
+  width: calc(100%-40px);;
+  margin: 15px 0;
+  height: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding:20px;
+}
+.ul-info{
+  list-style: circle;
+  color: #5e6d82;
+  font-size: 14px;
+  margin: 20px;
+  li{
+    margin-top: 5px;
   }
 }

@@ -275,8 +275,7 @@ export default {
     // 编辑
     editTable(row) {
       this.formData = Object.assign({}, row);
-      this.formData.url=row.url;
-      this.inLine_FormModel[2].imgList = [{
+      this.formData.url=this.inLine_FormModel[2].imgList = [{
         imgPath:row.url
       }];
       this.editType = "update";
@@ -293,6 +292,7 @@ export default {
     },
     changeTab(form, type) {
       let result=this.$refs['iforms'].getFormData();
+      console.log(result,"result")
         if (result) {
           if (type === "update") {
             editGoods({
