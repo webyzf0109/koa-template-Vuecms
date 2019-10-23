@@ -1,6 +1,10 @@
 const demoCode = {
     demoDefault: function () {
-        return `    <y-table
+        return `   /**main.js 引用***/
+    import yzfwork from 'yzfwork;
+    vue.use(yzfwork); 
+    /*****  使用 ***/
+    <y-table
      :tableData="tableData"
      :tableModel="tableModel"
      :border="border"

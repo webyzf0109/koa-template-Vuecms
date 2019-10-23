@@ -85,7 +85,7 @@ export default {
         {
           label: "商品名称",
           prop: "name",
-          minWidth: 200
+          minWidth: '200'
         },
         {
           slot: "operation2",
@@ -175,14 +175,14 @@ export default {
           label: "商品名称：",
           prop: "name",
           rules: ["required"],
-          width: "250px"
+          width: 250
         },
         {
           elemType: "select",
           label: "商品分类：",
           placeholder: "请选择商品分类",
           defaultValue: "",
-          width: "250px",
+          width: 250,
           rules: ["required"],
           prop: "category_type",
           col: "name",
@@ -213,7 +213,7 @@ export default {
           label: "商品价格：",
           prop: "price",
           rules: ["required", "bNumber"],
-          width: "250px"
+          width: 250
         },
         {
           elemType: "input",
@@ -222,7 +222,7 @@ export default {
           label: "商品规格：",
           prop: "rule",
           rules: ["required"],
-          width: "250px"
+          width: 250
         }
       ]
     };

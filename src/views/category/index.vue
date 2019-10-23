@@ -131,7 +131,7 @@ export default {
           prop: "name",
           rules: ["required",],
           labelWidth: "130px",
-          width: "250px",
+          width: 250,
         }
       ],
       editType: "",
