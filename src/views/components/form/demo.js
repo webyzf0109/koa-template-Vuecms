@@ -19,11 +19,29 @@ const demoCode = {
     </y-form>
     /*** 注意这一点：如果form 表单写在弹窗里，就会自动重置表单******/
     watch: {
-        diaIsShow: function(newValue, oldValue) {
-            this.isReady = newValue;
-        }
+      diaIsShow: function(newValue, oldValue) {
+        this.isReady = newValue;
+      }
     },
     /*** 注意这一点：如果form 表单没写在弹窗里，控制isReady自动重置表单即可******/
+
+    /*** onChange 方法里添加 自定义的验证方法 ****/
+    onChange($event, formModel, formData, index) {
+      let rules = formModel[index].rules;
+      if (rules.length == 1) {
+        let newRule = function (rule, val, callback) {
+        let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          if (!reg.test(val)) {
+            callback(new Error('请输入正确身份证号'))
+          } else {
+            callback()
+          }
+        }
+        formModel[index].rules = rules.concat([newRule]);
+      } else {
+        return;
+      }
+    },
     `
     },
     demoTableData: [{
@@ -247,8 +265,24 @@ const demoCode = {
             value: "upload",
             defaultValue: 'upload',
             isSure: 'upload必传,其他不传'
-
+        },
+        {
+            name: 'rules',
+            description: "表单验证方式",
+            type: 'Array',
+            value: "phone 手机号 | email 邮箱 | idNo 身份证号 | intger 正整数(不包括0) | intgerZero | 正整数(包括0) | number 大于等于0的数字 | bNumber 大于0的数字 | custom 自定义",
+            defaultValue: 'upload',
+            isSure: 'upload必传,其他不传'
+        },
+        {
+            name: 'onChange',
+            description: "表单验证为custom时,可以把自定义的验证写在下边方法里",
+            type: 'Function',
+            value: "onChange($event, formModel, formData, index) { 详细参照上边代码 }",
+            defaultValue: '——',
+            isSure: 'false'
         }
+
 
     ],
     demoTableModel2: [{

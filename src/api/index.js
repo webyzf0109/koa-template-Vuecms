@@ -47,6 +47,10 @@ axios.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 403:
+          if(error.response.data.message=="密码不正确"){
+            Message.error('密码不正确');
+            return;
+          }
           // 返回403 清除token信息并跳转到登陆页面
           store.commit('DEL_TOKEN')
           router.replace({
