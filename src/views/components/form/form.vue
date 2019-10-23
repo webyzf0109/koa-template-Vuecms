@@ -2,10 +2,8 @@
   <div class="table-box">
     <h1>form表单</h1>
     <ul class="ul-info">
-      <li>通过声明附件上传地址跟上传配置信息迅速构建出上传组件</li>
-      <li>暴露出图片宽高以及尺寸宽高供不同地方使用</li>
-      <li>有单传跟多传配置，还有最大上传数量限制</li>
-      <li>注意：图片大小不得超过2M,格式为 gif | png | jpg | jpeg | webp</li>
+      <li>通过声明formData(数据)和formModel(表单模型),迅速构建出基于 "el-form" 的表单</li>
+      <li>可以使用 slot="iform-btns" 自定义按钮</li>
     </ul>
     <h3>示例代码</h3>
     <pre v-highlightA>
