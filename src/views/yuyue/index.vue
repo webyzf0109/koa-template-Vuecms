@@ -7,46 +7,40 @@
       <div class="searchDiv">
         <el-input type="text" placeholder="请输入预约人名字" class="width1" v-model="name"></el-input>
         <el-select v-model="currentYuyueState" placeholder="请选择预约状态" class="width1">
-          <el-option
-            v-for="item in yuyueList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
+          <el-option v-for="item in yuyueList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
         <el-button type="primary" icon="el-icon-search" @click="searchTab()">搜索</el-button>
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addTab">添加</el-button>
       </div>
 
       <y-table :tableData="tableData" :tableModel="tableModel">
         <template slot="operation1" slot-scope="scope">{{scope.scope.row.time | dateFormat}}</template>
         <template slot="operation2" slot-scope="scope">
-            <img style="width:80px;" :src="scope.scope.row.Good.goodsUrl" alt />
-            <div>
-              <p>{{ scope.scope.row.Good.goodsName }}</p>
-              <p>￥{{ scope.scope.row.Good.goodsPrice }} x {{ scope.scope.row.count }}</p>
-              <p>总计：￥{{ scope.scope.row.Good.goodsPrice * scope.scope.row.count }}</p>
-            </div>
-          </template>
-          <template slot="operation3" slot-scope="scope">
-            <div class="flex-column">
-              <el-tag v-if="scope.scope.row.payState == 0" type="info" >待付款</el-tag>
-              <el-tag v-if="scope.scope.row.payState == 1" type="danger">已付款,待取货</el-tag>
-              <el-tag v-if="scope.scope.row.payState == 2">已完成</el-tag>
-              <span
-                v-if="scope.scope.row.payState == 0"
-                class="click-color"
-                @click="onEditPayState(scope.scope.row.id,1)"
-              >修改为已付款</span>
-              <span
-                v-if="scope.scope.row.payState == 1"
-                class="click-color"
-                @click="onEditPayState(scope.scope.row.id,2)"
-              >修改为已完成</span>
-            </div>
-          </template>
+          <img style="width:80px;" :src="scope.scope.row.Good.goodsUrl" alt />
+          <div>
+            <p>{{ scope.scope.row.Good.goodsName }}</p>
+            <p>￥{{ scope.scope.row.Good.goodsPrice }} x {{ scope.scope.row.count }}</p>
+            <p>总计：￥{{ scope.scope.row.Good.goodsPrice * scope.scope.row.count }}</p>
+          </div>
+        </template>
+        <template slot="operation3" slot-scope="scope">
+          <div class="flex-column">
+            <el-tag v-if="scope.scope.row.payState == 0" type="info">待付款</el-tag>
+            <el-tag v-if="scope.scope.row.payState == 1" type="danger">已付款,待取货</el-tag>
+            <el-tag v-if="scope.scope.row.payState == 2">已完成</el-tag>
+            <span
+              v-if="scope.scope.row.payState == 0"
+              class="click-color"
+              @click="onEditPayState(scope.scope.row.id,1)"
+            >修改为已付款</span>
+            <span
+              v-if="scope.scope.row.payState == 1"
+              class="click-color"
+              @click="onEditPayState(scope.scope.row.id,2)"
+            >修改为已完成</span>
+          </div>
+        </template>
       </y-table>
-      
+
       <el-pagination
         background
         layout="total, sizes, prev, pager, next"
@@ -59,15 +53,18 @@
       ></el-pagination>
     </el-card>
     <el-dialog title="预约管理" :visible.sync="diaIsShow" class="diaForm">
-      <el-form ref="diaForm" :model="formData" :rules="rules" label-width="140px">
-        <el-form-item label="订单备注" prop="remark">
-          <el-input type="text" v-model="formData.remark"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="changeTab('diaForm')">确认</el-button>
+      <y-form
+        :labelWidth="130"
+        ref="iforms"
+        :formData="formData"
+        :formModel="formModel"
+        v-if="isReady"
+      >
+        <div slot="iform-btns">
+          <el-button type="primary" size="small" @click="changeTab('iforms')">确认</el-button>
           <el-button @click="diaIsShow = false">取消</el-button>
-        </el-form-item>
-      </el-form>
+        </div>
+      </y-form>
     </el-dialog>
   </div>
 </template>
@@ -78,6 +75,18 @@ import { getCategoryAllName } from "@/api/category";
 export default {
   data() {
     return {
+      formData: {},
+      formModel: [
+        {
+          elemType: "input",
+          label: "订单备注",
+          placeholder: "请输入订单备注",
+          prop: "remark",
+          width: 250,
+          maxlength: "100",
+          rules: ["required"]
+        }
+      ],
       tableData: [],
       tableModel: [
         {
@@ -86,7 +95,7 @@ export default {
           width: 50
         },
         {
-          prop:'name',
+          prop: "name",
           label: "姓名",
           minWidth: 100
         },
@@ -102,12 +111,12 @@ export default {
         },
         {
           label: "预约商品",
-          slot:'operation2',
+          slot: "operation2",
           minWidth: 120
         },
         {
           label: "付款状态",
-          slot:'operation3',
+          slot: "operation3",
           minWidth: 100
         },
         {
@@ -115,10 +124,8 @@ export default {
           minWidth: 150,
           render: (h, params) => {
             return [
+              h("div", params.row.remark),
               h(
-                "div",
-                params.row.remark
-              ),h(
                 "a",
                 {
                   class: {
@@ -134,7 +141,7 @@ export default {
                   }
                 },
                 "修改订单备注"
-              ),
+              )
             ];
           }
         }
@@ -145,20 +152,20 @@ export default {
       total: 0,
       rowss: [10, 20, 30, 40],
       diaIsShow: false,
-      formData: {},
-      yuyueList:[
-        {id:'',name:'全部状态'},
-        {id:0,name:'待付款'},
-        {id:1,name:'已付款,待取货'},
-        {id:2,name:'已完成'},
+      yuyueList: [
+        { id: "", name: "全部状态" },
+        { id: 0, name: "待付款" },
+        { id: 1, name: "已付款,待取货" },
+        { id: 2, name: "已完成" }
       ],
-      rules: {
-        remark: [
-          { required: true, message: "请输入订单备注", trigger: "change" }
-        ]
-      },
-      currentYuyueState:""
+      currentYuyueState: "",
+      isReady: false
     };
+  },
+  watch: {
+    diaIsShow: function(newValue, oldValue) {
+      this.isReady = newValue;
+    }
   },
   created() {
     this.getList();
@@ -184,7 +191,7 @@ export default {
         rows: this.rows,
         name: this.name,
         type: 1,
-        payState:this.currentYuyueState
+        payState: this.currentYuyueState
       }).then(res => {
         this.tableData = res.rows;
         this.total = res.count;
@@ -195,21 +202,10 @@ export default {
       this.page = 1;
       this.getList();
     },
-    // add
-    addTab() {
-      this.formData = {};
-      this.diaIsShow = true;
-      this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
-    },
     // 编辑
     editTable(row) {
       this.formData = Object.assign({}, row);
       this.diaIsShow = true;
-      this.$nextTick(() => {
-        this.$refs.diaForm.clearValidate();
-      });
     },
     //删除
     romoveItem(id) {
@@ -221,23 +217,25 @@ export default {
       });
     },
     changeTab(form) {
-      this.$refs[form].validate(valid => {
-        if (valid) {
-          editOrderRemark({
-            id: this.formData.id,
-            remark: this.formData.remark
-          }).then(res => {
-            this.$message.success("修改成功");
-            this.getList();
-          });
-          this.diaIsShow = false;
-        } else {
-          return;
-        }
-      });
+      let result = this.$refs["iforms"].getFormData();
+      if (result) {
+        editOrderRemark({
+          id: result.id,
+          remark: result.remark
+        }).then(res => {
+          this.$message.success("修改成功");
+          this.getList();
+        });
+        this.diaIsShow = false;
+      } else {
+        return;
+      }
     },
-    onEditPayState(id,state) {
-      this.$confirm(state==1?"确定该用户已经付款?":"确定该用户已经取货", "提示").then(res => {
+    onEditPayState(id, state) {
+      this.$confirm(
+        state == 1 ? "确定该用户已经付款?" : "确定该用户已经取货",
+        "提示"
+      ).then(res => {
         editPayState({
           id: id,
           payState: state

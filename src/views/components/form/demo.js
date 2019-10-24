@@ -150,7 +150,7 @@ const demoCode = {
             name: 'placeholder',
             description: '默认提示语句',
             type: 'String',
-            value: '见下表',
+            value: '——',
             defaultValue: '——',
             isSure: 'true'
         },
@@ -270,7 +270,7 @@ const demoCode = {
             name: 'rules',
             description: "表单验证方式",
             type: 'Array',
-            value: "phone 手机号 | email 邮箱 | idNo 身份证号 | intger 正整数(不包括0) | intgerZero | 正整数(包括0) | number 大于等于0的数字 | bNumber 大于0的数字 | custom 自定义",
+            value: "required 必填 | phone 手机号 | email 邮箱 | idNo 身份证号 | intger 正整数(不包括0) | intgerZero | 正整数(包括0) | number 大于等于0的数字 | bNumber 大于0的数字 | custom 自定义",
             defaultValue: 'upload',
             isSure: 'upload必传,其他不传'
         },

@@ -85,7 +85,7 @@ export default {
         {
           label: "商品名称",
           prop: "name",
-          minWidth: '200'
+          minWidth: "200"
         },
         {
           slot: "operation2",
@@ -156,15 +156,6 @@ export default {
       },
       isReady: false,
       editType: "",
-      rules: {
-        price: [
-          { required: true, message: "请输入商品价格", trigger: "change" }
-        ],
-        rule: [
-          { required: true, message: "请输入商品规格", trigger: "change" }
-        ],
-        url: [{ required: true, validator: validatordataList }]
-      },
       currentCategory: "",
       categoryList: [],
       inLine_FormModel: [
@@ -202,9 +193,7 @@ export default {
           num: 1,
           maxNum: 1,
           uploadUrl: "/v1/upload",
-          imgList:[
-
-          ]
+          imgList: []
         },
         {
           elemType: "input",
@@ -275,9 +264,11 @@ export default {
     // 编辑
     editTable(row) {
       this.formData = Object.assign({}, row);
-      this.formData.url=this.inLine_FormModel[2].imgList = [{
-        imgPath:row.url
-      }];
+      this.formData.url = this.inLine_FormModel[2].imgList = [
+        {
+          imgPath: row.url
+        }
+      ];
       this.editType = "update";
       this.diaIsShow = true;
     },
@@ -291,37 +282,36 @@ export default {
       });
     },
     changeTab(form, type) {
-      let result=this.$refs['iforms'].getFormData();
-      console.log(result,"result")
-        if (result) {
-          if (type === "update") {
-            editGoods({
-              id: result.id,
-              name: result.name,
-              category_type: result.category_type,
-              price: result.price,
-              url: result.url[0].imgPath,
-              rule: result.rule
-            }).then(res => {
-              this.$message.success("修改成功");
-              this.getList();
-            });
-          } else {
-            addGoods({
-              name: result.name,
-              category_type: result.category_type,
-              url: result.url[0].imgPath,
-              price: result.price,
-              rule: result.rule
-            }).then(res => {
-              this.$message.success("新增成功");
-              this.getList();
-            });
-          }
-          this.diaIsShow = false;
+      let result = this.$refs["iforms"].getFormData();
+      if (result) {
+        if (type === "update") {
+          editGoods({
+            id: result.id,
+            name: result.name,
+            category_type: result.category_type,
+            price: result.price,
+            url: result.url[0].imgPath,
+            rule: result.rule
+          }).then(res => {
+            this.$message.success("修改成功");
+            this.getList();
+          });
         } else {
-          return;
+          addGoods({
+            name: result.name,
+            category_type: result.category_type,
+            url: result.url[0].imgPath,
+            price: result.price,
+            rule: result.rule
+          }).then(res => {
+            this.$message.success("新增成功");
+            this.getList();
+          });
         }
+        this.diaIsShow = false;
+      } else {
+        return;
+      }
     }
   }
 };
