@@ -18,12 +18,13 @@ import getTitle from '@/utils/getTitle'
  */
 
 /*通用routers*/
-export const currencyRoutes = [
-  {
+export const currencyRoutes = [{
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login'),
-    meta: { title: '登录页' },
+    meta: {
+      title: '登录页'
+    },
     hidden: true
   },
   {
@@ -31,54 +32,89 @@ export const currencyRoutes = [
     name: 'Home',
     component: Layout,
     redirect: '/home',
-    children: [
-      {
+    children: [{
         path: 'home',
         name: 'home',
         component: () => import('@/views/home'),
-        meta: { title: '首页', icon: 'el-icon-s-data' }
+        meta: {
+          title: '首页',
+          icon: 'el-icon-s-data'
+        }
       },
       {
         path: '/activity',
         name: 'activity',
         component: () => import('@/views/activity'),
-        meta: { title: '活动管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '活动管理',
+          icon: 'el-icon-s-data'
+        }
       },
       {
         path: '/category',
         name: 'category',
         component: () => import('@/views/category'),
-        meta: { title: '分类管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '分类管理',
+          icon: 'el-icon-s-data'
+        }
       },
+      /**商品管理 */
       {
         path: '/goods',
         name: 'goods',
         component: () => import('@/views/goods'),
-        meta: { title: '商品管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '商品管理',
+          icon: 'el-icon-s-data',
+          noCache: true 
+        }
       },
+      {
+        path: '/goods/editGoods',
+        name: 'editGoods',
+        component: () => import('@/views/goods/editGoods'),
+        meta: {
+          title: '修改商品',
+          icon: 'el-icon-s-data',
+        }
+      },
+      /**预约管理 */
       {
         path: '/yuyue',
         name: 'yuyue',
         component: () => import('@/views/yuyue'),
-        meta: { title: '预约管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '预约管理',
+          icon: 'el-icon-s-data'
+        }
       },
       {
         path: '/table',
         name: 'table',
         component: () => import('@/views/components/table/table'),
-        meta: { title: '预约管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '预约管理',
+          icon: 'el-icon-s-data'
+        }
       },
       {
         path: '/form',
         name: 'form',
         component: () => import('@/views/components/form/form'),
-        meta: { title: '预约管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '预约管理',
+          icon: 'el-icon-s-data'
+        }
       },
       {
         path: '/upload',
         name: 'upload',
         component: () => import('@/views/components/upload/upload'),
-        meta: { title: '预约管理', icon: 'el-icon-s-data' }
+        meta: {
+          title: '预约管理',
+          icon: 'el-icon-s-data'
+        }
       }
     ]
   }
@@ -88,7 +124,10 @@ const creatRouter = () => {
   return new Router({
     routes: currencyRoutes,
     scrollBehavior() {
-      return { x: 0, y: 0 }
+      return {
+        x: 0,
+        y: 0
+      }
     }
   })
 }

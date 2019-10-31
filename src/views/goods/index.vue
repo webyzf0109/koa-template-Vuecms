@@ -38,28 +38,11 @@
         @current-change="handlePage"
       ></el-pagination>
     </el-card>
-
-    <el-dialog title="商品管理" :visible.sync="diaIsShow" class="diaForm">
-      <y-form
-        :labelWidth="140"
-        ref="iforms"
-        :formData="formData"
-        :formModel="inLine_FormModel"
-        formName="inLine"
-        v-if="isReady"
-      >
-        <div slot="iform-btns">
-          <el-button type="primary" @click="changeTab('iforms', editType)">确认</el-button>
-          <el-button @click="diaIsShow = false">取消</el-button>
-        </div>
-      </y-form>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, addGoods, removeGoods, editGoods } from "@/api/goods";
-import { getCategoryAllName } from "@/api/category";
+import { getList, removeGoods } from "@/api/goods";
 export default {
   data() {
     const validatordataList = (rule, value, callback) => {
@@ -150,89 +133,16 @@ export default {
       rows: 10,
       total: 0,
       rowss: [10, 20, 30, 40],
-      diaIsShow: false,
-      formData: {
-        url: []
-      },
-      isReady: false,
       editType: "",
       currentCategory: "",
       categoryList: [],
-      inLine_FormModel: [
-        {
-          elemType: "input",
-          placeholder: "请输入商品名称",
-          maxlength: 30,
-          label: "商品名称：",
-          prop: "name",
-          rules: ["required"],
-          width: 250
-        },
-        {
-          elemType: "select",
-          label: "商品分类：",
-          placeholder: "请选择商品分类",
-          defaultValue: "",
-          width: 250,
-          rules: ["required"],
-          prop: "category_type",
-          col: "name",
-          colVal: "id",
-          options: []
-        },
-        {
-          label: "上传图片：",
-          prop: "url",
-          elemType: "upload",
-          rules: ["required"],
-          ref: "upload",
-          width: 60,
-          height: 60,
-          sizeWidth: 750,
-          sizeHeight: 750,
-          num: 1,
-          maxNum: 1,
-          uploadUrl: "/v1/upload",
-          imgList: []
-        },
-        {
-          elemType: "input",
-          placeholder: "请输入商品价格",
-          maxlength: 30,
-          label: "商品价格：",
-          prop: "price",
-          rules: ["required", "bNumber"],
-          width: 250
-        },
-        {
-          elemType: "input",
-          placeholder: "请输入商品规格",
-          maxlength: 30,
-          label: "商品规格：",
-          prop: "rule",
-          rules: ["required"],
-          width: 250
-        }
-      ]
+
     };
   },
-  watch: {
-    diaIsShow: function(newValue, oldValue) {
-      this.isReady = newValue;
-    }
-  },
   created() {
-    this.getCategoryAllName();
     this.getList();
   },
   methods: {
-    getCategoryAllName() {
-      getCategoryAllName().then(res => {
-        this.categoryList = res;
-        res.shift();
-        this.inLine_FormModel[1].options = res;
-      });
-    },
     handleSize(val) {
       (this.rows = val), this.getList();
     },
@@ -257,20 +167,23 @@ export default {
     },
     // add
     addTab() {
-      this.formData = {};
-      this.diaIsShow = true;
-      this.editType = "add";
+      this.$router.push('/goods/editGoods')
     },
     // 编辑
     editTable(row) {
-      this.formData = Object.assign({}, row);
-      this.formData.url = this.inLine_FormModel[2].imgList = [
+      let formData = Object.assign({}, row);
+      formData.url =[
         {
           imgPath: row.url
         }
       ];
-      this.editType = "update";
-      this.diaIsShow = true;
+      this.$router.push({
+        path:'/goods/editGoods',
+        name:'editGoods',
+        params:{
+          goodsInfo:JSON.stringify(formData)
+        }
+      })
     },
     //删除
     romoveItem(id) {
@@ -281,38 +194,6 @@ export default {
         });
       });
     },
-    changeTab(form, type) {
-      let result = this.$refs["iforms"].getFormData();
-      if (result) {
-        if (type === "update") {
-          editGoods({
-            id: result.id,
-            name: result.name,
-            category_type: result.category_type,
-            price: result.price,
-            url: result.url[0].imgPath,
-            rule: result.rule
-          }).then(res => {
-            this.$message.success("修改成功");
-            this.getList();
-          });
-        } else {
-          addGoods({
-            name: result.name,
-            category_type: result.category_type,
-            url: result.url[0].imgPath,
-            price: result.price,
-            rule: result.rule
-          }).then(res => {
-            this.$message.success("新增成功");
-            this.getList();
-          });
-        }
-        this.diaIsShow = false;
-      } else {
-        return;
-      }
-    }
   }
 };
 </script>
