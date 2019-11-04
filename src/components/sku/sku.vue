@@ -235,10 +235,23 @@ export default {
   data() {
     return {
       // 规格
-      specification: [],
+      specification: [
+        {
+          name:"颜色",
+          value:["蓝色","白色","黑色"],
+        },
+        {
+          name:"尺码",
+          value:["l","m","x"],
+        },
+        // {name:'蓝色'},
+        // {name:'花色'},
+      ],
       // 子规格
       productArray: [
-        { "productId": 0, "productSpec": { "颜色": "黑色", "尺寸": "s" }, "productNo": "PRODUCTNO_0", "productStock": 2, "productPrice": 3, "productCost": 1 }
+        // { "productId": 0, "productSpec": { "颜色": "黑色", "尺寸": "s" }, "productNo": "PRODUCTNO_0", "productStock": 2, "productPrice": 3, "productCost": 1 },
+        // { "productId": 0, "productSpec": { "颜色": "黑色", "尺寸": "l" }, "productNo": "PRODUCTNO_0", "productStock": 2, "productPrice": 3, "productCost": 1 }
+       
       ],
       // 用来存储要添加的规格属性
       addValues: [],
@@ -260,7 +273,7 @@ export default {
   },
   created() {
     this.handleSpecChange();
-    // this.createData();
+    this.createData();
   },
   methods: {
     // 创建模拟数据
@@ -269,7 +282,14 @@ export default {
       // const arr2 = ["黑色 白色 蓝色", "s m xl"];
       // for (let i = 0; i < 2; i++) {
       //   // 添加数据
-      //   this.addSpec();
+      //   this.cacheSpecification.push({
+      //     status: true,
+      //     name: ""
+      //   });
+      //   this.specification.push({
+      //     value:[],
+      //     name:''
+      //   })
       //   // 数据
       //   this.specification[i].name = arr[i];
       //   this.addValues[i] = arr2[i];
@@ -277,16 +297,29 @@ export default {
       //   this.cacheSpecification[i].status = false;
       //   this.cacheSpecification[i].name = arr[i];
       //   // 构建
+      //   console.log(this.addValues,'addValues')
       //   this.addSpecTag(i);
       // }
-    },
-    // 添加规格项目
-    addSpec() {
-      if (this.specification.length < 5) {
+
+      for (let i = 0; i < this.specification.length; i++) {
+        // 添加数据
         this.cacheSpecification.push({
           status: true,
           name: ""
         });
+        // 缓存按钮键值
+        this.cacheSpecification[i].status = false;
+        this.addValues[i] = this.specification[i].value.toString();
+        this.cacheSpecification[i].name = this.specification[i].name;
+        // 构建
+       console.log(this.addValues,'addValues')
+        console.log(this.specification)
+        this.addSpecTag(i);
+      }
+    },
+    // 添加规格项目
+    addSpec() {
+      if (this.specification.length < 5) {
         this.specification.push({
           name: "",
           value: []
@@ -348,9 +381,10 @@ export default {
       } // 判空
       str = str.trim();
       let arr = str.split(/\s+/); // 使用空格分割成数组
-
+      
       let newArr = this.specification[index].value.concat(arr);
       newArr = Array.from(new Set(newArr)); // 去重
+      console.log(newArr)
       this.$set(this.specification[index], "value", newArr);
 
       this.clearAddValues(index);
@@ -437,11 +471,12 @@ export default {
      * @return {[type]}        [description]
      */
     handleSpecChange(option) {
+      // console.log(1)
       const stockCopy = JSON.parse(JSON.stringify(this.productArray));
+      // console.log(stockCopy)
       if (option === "del") {
         this.productArray = [];
       }
-
       for (let i = 0; i < this.countSum(0); i++) {
         this.changeStock(option, i, stockCopy);
       }
@@ -454,6 +489,9 @@ export default {
      * @return {[type]}           [description]
      */
     changeStock(option, index, stockCopy) {
+      // console.log(option,'option')
+      // console.log(index,'index')
+      // console.log(stockCopy,'stockCopy')
       let product = {
         productId: 0,
         productSpec: this.getproductSpec(index),
@@ -462,15 +500,20 @@ export default {
         productPrice: 0,
         productCost: 0
       };
-      console.log(product)
-
+      // console.log(product)
+      // console.log(2)
       const spec = product.productSpec;
+      // console.log(spec,'spec')
+      // console.log(this.productArray,"productArray")
       if (option === "add") {
+        // console.log(3)
+        
         // 如果此id不存在，说明为新增属性，则向 productArray 中添加一条数据
         if (this.stockSpecArr.findIndex(item => objEquals(spec, item)) === -1) {
           this.$set(this.productArray, index, product);
         }
       } else if (option === "del") {
+        console.log(4)
         // 因为是删除操作，理论上所有数据都能从stockCopy中获取到
         let origin = "";
         stockCopy.forEach(item => {
