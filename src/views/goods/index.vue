@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { getCategoryAllName } from "@/api/category";
 import { getList, removeGoods } from "@/api/goods";
 export default {
   data() {
@@ -141,6 +142,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryAllName();
   },
   methods: {
     handleSize(val) {
@@ -148,6 +150,11 @@ export default {
     },
     handlePage(val) {
       (this.page = val), this.getList();
+    },
+    getCategoryAllName() {
+      getCategoryAllName().then(res => {
+        this.categoryList = res;
+      });
     },
     getList() {
       getList({

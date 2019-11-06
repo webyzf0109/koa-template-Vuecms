@@ -73,7 +73,6 @@
         <thead>
           <tr>
             <th style="width: 100px;" v-for="(item, index) in specification" :key="index">{{item.name}}</th>
-            <th style="width: 180px;">规格编码</th>
             <th style="width: 180px;">成本价（元）</th>
             <th style="width: 180px;">库存</th>
             <th style="width: 180px;">销售价（元）</th>
@@ -91,21 +90,10 @@
             </template>
             <td>
               <el-input
-                style="width:160px"
-                size="small"
-                type="text"
-                :disabled="true"
-                v-model="productArray[index].productNo"
-                @blur="handleNo(index)"
-                placeholder="输入商品规格编号"
-              ></el-input>
-            </td>
-            <td>
-              <el-input
                 style="width:100px"
                 size="small"
                 type="text"
-                v-model.number="productArray[index].productCost"
+                v-model.number="productArray[index].minPrice"
                 placeholder="输入成本价"
               ></el-input>
             </td>
@@ -114,7 +102,7 @@
                 style="width:100px"
                 size="small"
                 type="text"
-                v-model.number="productArray[index].productStock"
+                v-model.number="productArray[index].stock"
                 placeholder="输入库存"
               ></el-input>
             </td>
@@ -123,7 +111,7 @@
                 style="width:100px"
                 size="small"
                 type="text"
-                v-model.number="productArray[index].productPrice"
+                v-model.number="productArray[index].price"
                 placeholder="输入销售价"
               ></el-input>
             </td>
@@ -132,9 +120,9 @@
             <td colspan="8" class="wh-foot">
               <span class="label">批量设置：</span>
               <template v-if="isSetListShow">
-                <el-button @click="openBatch('productCost')" size="mini">成本价</el-button>
-                <el-button @click="openBatch('productStock')" size="mini">库存</el-button>
-                <el-button @click="openBatch('productPrice')" size="mini">销售价</el-button>
+                <el-button @click="openBatch('minPrice')" size="mini">成本价</el-button>
+                <el-button @click="openBatch('stock')" size="mini">库存</el-button>
+                <el-button @click="openBatch('price')" size="mini">销售价</el-button>
               </template>
               <template v-else>
                 <el-input
@@ -236,27 +224,23 @@ export default {
     return {
       // 规格
       specification: [
-        {
-          name:"颜色",
-          value:["蓝色","白色","黑色"],
-        },
-        {
-          name:"尺码",
-          value:["l","m","x"],
-        },
+        // {
+        //   name:"颜色",
+        //   value:["黑色 白色 蓝色"],
+        // },
+        // {
+        //   name:"尺码",
+        //   value:["l m x"],
+        // },
         // {name:'蓝色'},
         // {name:'花色'},
       ],
       // 子规格
       productArray: [
-        // { "productId": 0, "productSpec": { "颜色": "黑色", "尺寸": "s" }, "productNo": "PRODUCTNO_0", "productStock": 2, "productPrice": 3, "productCost": 1 },
-        // { "productId": 0, "productSpec": { "颜色": "黑色", "尺寸": "l" }, "productNo": "PRODUCTNO_0", "productStock": 2, "productPrice": 3, "productCost": 1 }
        
       ],
       // 用来存储要添加的规格属性
       addValues: [],
-      // 默认商品编号
-      defaultProductNo: "PRODUCTNO_",
       // 批量设置相关
       isSetListShow: true,
       batchValue: "", // 批量设置所绑定的值
@@ -272,50 +256,47 @@ export default {
     }
   },
   created() {
-    this.handleSpecChange();
+    // this.handleSpecChange();
     this.createData();
   },
   methods: {
     // 创建模拟数据
     createData() {
-      // const arr = ["颜色", "尺寸"];
-      // const arr2 = ["黑色 白色 蓝色", "s m xl"];
-      // for (let i = 0; i < 2; i++) {
-      //   // 添加数据
-      //   this.cacheSpecification.push({
-      //     status: true,
-      //     name: ""
-      //   });
-      //   this.specification.push({
-      //     value:[],
-      //     name:''
-      //   })
-      //   // 数据
-      //   this.specification[i].name = arr[i];
-      //   this.addValues[i] = arr2[i];
-      //   // 缓存按钮键值
-      //   this.cacheSpecification[i].status = false;
-      //   this.cacheSpecification[i].name = arr[i];
-      //   // 构建
-      //   console.log(this.addValues,'addValues')
-      //   this.addSpecTag(i);
-      // }
-
-      for (let i = 0; i < this.specification.length; i++) {
+      const arr = ["颜色", "尺寸"];
+      const arr2 = ["黑色 白色 蓝色", "s m xl"];
+      for (let i = 0; i < 2; i++) {
         // 添加数据
         this.cacheSpecification.push({
           status: true,
           name: ""
         });
+        this.specification.push({
+          value:[],
+          name:''
+        })
+        // 数据
+        this.specification[i].name = arr[i];
+        this.addValues[i] = arr2[i];
         // 缓存按钮键值
         this.cacheSpecification[i].status = false;
-        this.addValues[i] = this.specification[i].value.toString();
-        this.cacheSpecification[i].name = this.specification[i].name;
+        this.cacheSpecification[i].name = arr[i];
         // 构建
-       console.log(this.addValues,'addValues')
-        console.log(this.specification)
         this.addSpecTag(i);
       }
+
+      // for (let i = 0; i < this.specification.length; i++) {
+      //   // 添加数据
+      //   this.cacheSpecification.push({
+      //     status: true,
+      //     name: ""
+      //   });
+      //   // 缓存按钮键值
+      //   this.cacheSpecification[i].status = false;
+      //   this.addValues[i] = this.specification[i].value.toString();
+      //   this.cacheSpecification[i].name = this.specification[i].name;
+      //   // 构建
+      //   this.addSpecTag(i);
+      // }
     },
     // 添加规格项目
     addSpec() {
@@ -381,10 +362,8 @@ export default {
       } // 判空
       str = str.trim();
       let arr = str.split(/\s+/); // 使用空格分割成数组
-      
       let newArr = this.specification[index].value.concat(arr);
       newArr = Array.from(new Set(newArr)); // 去重
-      console.log(newArr)
       this.$set(this.specification[index], "value", newArr);
 
       this.clearAddValues(index);
@@ -392,6 +371,7 @@ export default {
       this.handleSpecChange("add");
       this.specification[index].name = this.cacheSpecification[index].name;
       this.cacheSpecification[index].status = false;
+      console.log(this.specification,"specification")
     },
 
     // 删除规格属性
@@ -471,9 +451,7 @@ export default {
      * @return {[type]}        [description]
      */
     handleSpecChange(option) {
-      // console.log(1)
       const stockCopy = JSON.parse(JSON.stringify(this.productArray));
-      // console.log(stockCopy)
       if (option === "del") {
         this.productArray = [];
       }
@@ -489,31 +467,20 @@ export default {
      * @return {[type]}           [description]
      */
     changeStock(option, index, stockCopy) {
-      // console.log(option,'option')
-      // console.log(index,'index')
-      // console.log(stockCopy,'stockCopy')
       let product = {
         productId: 0,
         productSpec: this.getproductSpec(index),
-        productNo: this.defaultProductNo + index,
-        productStock: 0,
-        productPrice: 0,
-        productCost: 0
+        stock: 0,
+        price: 0,
+        minPrice: 0
       };
-      // console.log(product)
-      // console.log(2)
       const spec = product.productSpec;
-      // console.log(spec,'spec')
-      // console.log(this.productArray,"productArray")
       if (option === "add") {
-        // console.log(3)
-        
         // 如果此id不存在，说明为新增属性，则向 productArray 中添加一条数据
         if (this.stockSpecArr.findIndex(item => objEquals(spec, item)) === -1) {
           this.$set(this.productArray, index, product);
         }
       } else if (option === "del") {
-        console.log(4)
         // 因为是删除操作，理论上所有数据都能从stockCopy中获取到
         let origin = "";
         stockCopy.forEach(item => {
@@ -523,6 +490,7 @@ export default {
           }
         });
         this.productArray.push(origin || product);
+        
       }
     },
 
@@ -535,62 +503,8 @@ export default {
       return obj;
     },
 
-    // 监听规格启用操作
-    handleUserChange(index, value) {
-      // 启用规格时，生成不重复的商品编号；关闭规格时，清空商品编号
-      if (value) {
-        let No = this.makeProductNoNotRepet(index);
-        this.$set(this.productArray[index], "productNo", No);
-      } else {
-        this.$set(this.productArray[index], "productNo", "");
-      }
-    },
 
-    // 监听商品编号的blur事件
-    handleNo(index) {
-      // 1.当用户输入完商品编号时，判断是否重复，如有重复，则提示客户并自动修改为不重复的商品编号
-      const value = this.productArray[index].productNo;
-      let isRepet;
 
-      this.productArray.forEach((item, i) => {
-        if (item.productNo === value && i !== index) {
-          isRepet = true;
-        }
-      });
-
-      if (isRepet) {
-        this.$message({
-          type: "warning",
-          message: "不允许输入重复的商品编号"
-        });
-        this.$set(
-          this.productArray[index],
-          "productNo",
-          this.makeProductNoNotRepet(index)
-        );
-      }
-    },
-
-    // 生成不重复的商品编号
-    makeProductNoNotRepet(index) {
-      let No;
-      let i = index;
-      let isRepet = true;
-      while (isRepet) {
-        No = this.defaultProductNo + i;
-        isRepet = this.isProductNoRepet(No);
-        i++;
-      }
-      return No;
-    },
-
-    // 商品编号判重
-    isProductNoRepet(No) {
-      const result = this.productArray.findIndex(item => {
-        return item.productNo === No;
-      });
-      return result > -1;
-    },
 
     // 打开设置框
     openBatch(type) {

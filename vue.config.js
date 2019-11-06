@@ -27,7 +27,8 @@ module.exports = {
     },
     proxy: {
       '/v1': {
-        target: 'http://shop.yyyzf.xyz',
+        // target: 'http://shop.yyyzf.xyz',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         // ws: true,
         pathRewrite: {

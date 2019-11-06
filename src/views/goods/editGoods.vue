@@ -97,7 +97,6 @@ export default {
     },
     getCategoryAllName() {
       getCategoryAllName().then(res => {
-        this.categoryList = res;
         res.shift();
         this.inLine_FormModel[1].options = res;
       });
