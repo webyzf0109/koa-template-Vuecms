@@ -35,7 +35,7 @@
             <span
               v-if="scope.scope.row.payState == 1"
               class="click-color"
-              @click="onEditPayState(scope.scope.row.id,2)"
+              @click="onEditPayState(scope.scope.row.id,3)"
             >修改为已完成</span>
           </div>
         </template>
