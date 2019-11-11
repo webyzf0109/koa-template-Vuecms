@@ -8,8 +8,8 @@
       formName="inLine"
     >
     </y-form>
-    <v-sku></v-sku>
-    <el-button type="primary" @click="changeTab('iforms')">确认</el-button>
+    <!-- <v-sku></v-sku> -->
+    <el-button style="margin-left:50px;" type="primary" @click="changeTab('iforms')">确认</el-button>
     <el-button @click="callBack">返回</el-button>
   </div>
 </template>
