@@ -8,7 +8,7 @@
       formName="inLine"
     >
     </y-form>
-    <!-- <v-sku></v-sku> -->
+    <v-sku ref="sku"></v-sku>
     <el-button style="margin-left:50px;" type="primary" @click="changeTab('iforms')">确认</el-button>
     <el-button @click="callBack">返回</el-button>
   </div>
@@ -63,24 +63,24 @@ export default {
           uploadUrl: "/v1/upload",
           imgList: []
         },
-        {
-          elemType: "input",
-          placeholder: "请输入商品价格",
-          maxlength: 30,
-          label: "商品价格：",
-          prop: "price",
-          rules: ["required", "bNumber"],
-          width: 250
-        },
-        {
-          elemType: "input",
-          placeholder: "请输入商品规格",
-          maxlength: 30,
-          label: "商品规格：",
-          prop: "rule",
-          rules: ["required"],
-          width: 250
-        }
+        // {
+        //   elemType: "input",
+        //   placeholder: "请输入商品价格",
+        //   maxlength: 30,
+        //   label: "商品价格：",
+        //   prop: "price",
+        //   rules: ["required", "bNumber"],
+        //   width: 250
+        // },
+        // {
+        //   elemType: "input",
+        //   placeholder: "请输入商品规格",
+        //   maxlength: 30,
+        //   label: "商品规格：",
+        //   prop: "rule",
+        //   rules: ["required"],
+        //   width: 250
+        // }
       ]
     };
   },
@@ -106,15 +106,15 @@ export default {
     },
     changeTab(form) {
       let result = this.$refs["iforms"].getFormData();
+      let rule=this.$refs.sku.getRule();
       if (result) {
         if (this.$route.params.goodsInfo) {
           editGoods({
             id: result.id,
             name: result.name,
             category_type: result.category_type,
-            price: result.price,
             url: result.url[0].imgPath,
-            rule: result.rule
+            rule: rule
           }).then(res => {
             this.$message.success("修改成功");
             this.$router.push({
@@ -129,8 +129,7 @@ export default {
             name: result.name,
             category_type: result.category_type,
             url: result.url[0].imgPath,
-            price: result.price,
-            rule: result.rule
+            rule: rule
           }).then(res => {
             this.$message.success("新增成功");
             this.$router.push({

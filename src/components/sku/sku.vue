@@ -305,6 +305,10 @@ export default {
           name: "",
           value: []
         });
+        this.cacheSpecification.push({
+          status: true,
+          name: ""
+        });
       }
     },
     // 修改状态
@@ -371,7 +375,11 @@ export default {
       this.handleSpecChange("add");
       this.specification[index].name = this.cacheSpecification[index].name;
       this.cacheSpecification[index].status = false;
-      console.log(this.specification,"specification")
+    },
+
+    /**获取商品规格 */
+    getRule(){
+      return JSON.stringify(this.specification);
     },
 
     // 删除规格属性
