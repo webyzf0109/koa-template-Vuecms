@@ -382,6 +382,12 @@ export default {
       return JSON.stringify(this.specification);
     },
 
+    /**获取所有的sku */
+    getSku(){
+      return JSON.stringify(this.productArray);
+    },
+
+
     // 删除规格属性
     delSpecTag(index, num) {
       this.specification[index].value.splice(num, 1);

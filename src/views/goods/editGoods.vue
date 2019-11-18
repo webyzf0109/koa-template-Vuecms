@@ -6,8 +6,7 @@
       :formData="formData"
       :formModel="inLine_FormModel"
       formName="inLine"
-    >
-    </y-form>
+    ></y-form>
     <v-sku ref="sku"></v-sku>
     <el-button style="margin-left:50px;" type="primary" @click="changeTab('iforms')">确认</el-button>
     <el-button @click="callBack">返回</el-button>
@@ -15,7 +14,7 @@
 </template>
 <script>
 import { getCategoryAllName } from "@/api/category";
-import { addGoods, editGoods } from "@/api/goods";
+import { addGoods, editGoods, getGoodsDetail } from "@/api/goods";
 import sku from "@/components/sku/sku";
 export default {
   components: {
@@ -62,7 +61,7 @@ export default {
           maxNum: 1,
           uploadUrl: "/v1/upload",
           imgList: []
-        },
+        }
         // {
         //   elemType: "input",
         //   placeholder: "请输入商品价格",
@@ -94,6 +93,11 @@ export default {
     loadDetail() {
       this.formData = JSON.parse(this.$route.params.goodsInfo);
       this.inLine_FormModel[2].imgList = this.formData.url;
+      getGoodsDetail({
+        id:this.$route.params.id
+      }).then(res=>{
+
+      })
     },
     getCategoryAllName() {
       getCategoryAllName().then(res => {
@@ -106,7 +110,16 @@ export default {
     },
     changeTab(form) {
       let result = this.$refs["iforms"].getFormData();
-      let rule=this.$refs.sku.getRule();
+      let rule = this.$refs.sku.getRule();
+      let productSpec = this.$refs.sku.getSku();
+      if (!rule) {
+        this.$message.error("请输入规格信息");
+        return;
+      }
+      if (!productSpec) {
+        this.$message.error("sku没有生成,请重新输入规格信息");
+        return;
+      }
       if (result) {
         if (this.$route.params.goodsInfo) {
           editGoods({
@@ -114,7 +127,8 @@ export default {
             name: result.name,
             category_type: result.category_type,
             url: result.url[0].imgPath,
-            rule: rule
+            rule: rule,
+            productSpec: productSpec
           }).then(res => {
             this.$message.success("修改成功");
             this.$router.push({
@@ -129,7 +143,8 @@ export default {
             name: result.name,
             category_type: result.category_type,
             url: result.url[0].imgPath,
-            rule: rule
+            rule: rule,
+            productSpec: productSpec
           }).then(res => {
             this.$message.success("新增成功");
             this.$router.push({

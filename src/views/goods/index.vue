@@ -76,16 +76,16 @@ export default {
           label: "商品图片",
           minWidth: 100
         },
-        {
-          label: "商品规格",
-          prop: "rule",
-          minWidth: 80
-        },
-        {
-          label: "商品单价",
-          prop: "price",
-          minWidth: 80
-        },
+        // {
+        //   label: "商品规格",
+        //   prop: "rule",
+        //   minWidth: 80
+        // },
+        // {
+        //   label: "商品单价",
+        //   prop: "price",
+        //   minWidth: 80
+        // },
         {
           label: "操作",
           minWidth: 150,
@@ -188,8 +188,9 @@ export default {
         path:'/goods/editGoods',
         name:'editGoods',
         params:{
-          goodsInfo:JSON.stringify(formData)
-        }
+          goodsInfo:JSON.stringify(formData),
+          id:row.id
+        },
       })
     },
     //删除

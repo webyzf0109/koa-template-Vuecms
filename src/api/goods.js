@@ -34,3 +34,8 @@ export function upload(params) {
   const url = '/v1/upload'
   return $axios.post(url, params)
 }
+
+export function getGoodsDetail(params) {
+  const url = '/v1/v2/goods/goodsDetail/'+params.id
+  return $axios.get(url, params)
+}
