@@ -89,33 +89,6 @@ export const currencyRoutes = [{
           icon: 'el-icon-s-data'
         }
       },
-      {
-        path: '/table',
-        name: 'table',
-        component: () => import('@/views/components/table/table'),
-        meta: {
-          title: '预约管理',
-          icon: 'el-icon-s-data'
-        }
-      },
-      {
-        path: '/form',
-        name: 'form',
-        component: () => import('@/views/components/form/form'),
-        meta: {
-          title: '预约管理',
-          icon: 'el-icon-s-data'
-        }
-      },
-      {
-        path: '/upload',
-        name: 'upload',
-        component: () => import('@/views/components/upload/upload'),
-        meta: {
-          title: '预约管理',
-          icon: 'el-icon-s-data'
-        }
-      }
     ]
   }
 ]

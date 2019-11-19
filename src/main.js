@@ -12,11 +12,6 @@ Vue.use(animated)
 
 import yzfwork from 'yzfwork'
 Vue.use(yzfwork)
-
-
-import Highlight from '@/utils/highlight';
-import 'highlight.js/styles/monokai-sublime.css';
-Vue.use(Highlight);
 // Vue.use(SlideVerify)
 Vue.config.productionTip = false
 
