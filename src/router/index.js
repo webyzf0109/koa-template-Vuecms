@@ -71,7 +71,7 @@ export const currencyRoutes = [{
         }
       },
       {
-        path: '/goods/editGoods',
+        path: '/goods/editGoods/:id',
         name: 'editGoods',
         component: () => import('@/views/goods/editGoods'),
         meta: {

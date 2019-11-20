@@ -84,20 +84,19 @@ export default {
     };
   },
   created() {
-    if (this.$route.params.goodsInfo) {
+    if (this.$route.params.id) {
       this.loadDetail();
     }
     this.getCategoryAllName();
   },
   methods: {
     loadDetail() {
-      this.formData = JSON.parse(this.$route.params.goodsInfo);
-      this.inLine_FormModel[2].imgList = this.formData.url;
       getGoodsDetail({
-        id:this.$route.params.id
-      }).then(res=>{
-
-      })
+        id: this.$route.params.id
+      }).then(res => {
+        this.formData =res;
+        this.inLine_FormModel[2].imgList = [{imgPath:res.url}];
+      });
     },
     getCategoryAllName() {
       getCategoryAllName().then(res => {

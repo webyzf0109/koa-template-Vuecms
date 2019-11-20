@@ -174,7 +174,7 @@ export default {
     },
     // add
     addTab() {
-      this.$router.push('/goods/editGoods')
+      this.$router.push('/goods/editGoods/0')
     },
     // 编辑
     editTable(row) {
@@ -185,12 +185,7 @@ export default {
         }
       ];
       this.$router.push({
-        path:'/goods/editGoods',
-        name:'editGoods',
-        params:{
-          goodsInfo:JSON.stringify(formData),
-          id:row.id
-        },
+        path:'/goods/editGoods/'+id,
       })
     },
     //删除
