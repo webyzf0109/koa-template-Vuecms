@@ -16,6 +16,17 @@ module.exports = {
       .set('views', resolve('src/views'))
     config.optimization.runtimeChunk('single')
   },
+  /**配置全局的less */
+  pluginOptions: {
+    "style-resources-loader": {
+      preProcessor: "less",
+      patterns: [
+        //这个是加上自己的路径，
+        //注意：试过不能使用别名路径
+        path.resolve(__dirname, "./src/assets/common/common.less")
+      ]
+    }
+  },
   devServer: {
     host: 'localhost',
     port: '8080',
@@ -27,8 +38,8 @@ module.exports = {
     },
     proxy: {
       '/v1': {
-        // target: 'http://shop.yyyzf.xyz',
-        target: 'http://localhost:3000',
+        target: 'http://shop.yyyzf.xyz',
+        // target: 'http://localhost:3000',
         changeOrigin: true,
         // ws: true,
         pathRewrite: {

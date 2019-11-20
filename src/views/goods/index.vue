@@ -231,7 +231,7 @@ export default {
   }
 }
 </style>
-<style lang="scss">
+<style lang="less">
 .anoCard {
   .el-card__body:after {
     content: "";
